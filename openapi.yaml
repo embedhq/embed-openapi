@@ -1,0 +1,5178 @@
+openapi: 3.0.0
+info:
+  title: Embed API
+  description: You can interact with the Embed API through HTTP requests from any language, or via our official [Node.js](https://github.com/embedhq/embed-node) and [Python](https://github.com/embedhq/embed-python) clients.
+  version: "1.0.0"
+  contact:
+    name: Embed Support
+    email: support@useembed.com
+security:
+  - ApiKeyAuth: []
+servers:
+  - url: https://api.useembed.com/v1
+tags:
+  - name: Integrations
+    description: Integrate with third-party apps.
+  - name: Connections
+    description: Connect accounts to integrations.
+  - name: Session Tokens
+    description: Secure the auth flow with session tokens.
+  - name: Collections
+    description: Manage data from apps with collections.
+  - name: Syncs
+    description: Sync data from apps.
+  - name: Actions
+    description: Take actions in apps.
+  - name: Proxy
+    description: Proxy requests to third-party APIs.
+  - name: Webhooks
+    description: View and manage webhooks.
+  - name: Providers
+    description: View integration providers.
+paths:
+  /integrations:
+    post:
+      operationId: createIntegration
+      tags:
+        - Integrations
+      summary: Create integration
+      description: Creates an integration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateIntegrationRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegrationObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const integration = await embed.integrations.create({
+              id: "github-123",
+              provider_key: "github",
+              oauth_client_id: "...",
+              oauth_client_secret: "..."
+            });
+
+            console.log(integration);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            integration = client.integrations.create(
+              id="github-123",
+              provider_key="github",
+              oauth_client_id="...",
+              oauth_client_secret="..."
+            )
+
+            print(integration)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/integrations \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "id": "github-123",
+                "provider_key": "github",
+                "oauth_client_id": "...",
+                "oauth_client_secret": "...",
+              }'
+    get:
+      operationId: listIntegrations
+      tags:
+        - Integrations
+      summary: List integrations
+      description: Returns a list of integrations.
+      parameters:
+        - "$ref": "#/components/parameters/limit"
+        - "$ref": "#/components/parameters/order"
+        - "$ref": "#/components/parameters/after"
+        - "$ref": "#/components/parameters/before"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListIntegrationsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const integrations = await embed.integrations.list();
+
+            console.log(integrations);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            integrations = client.integrations.list()
+
+            print(integrations)
+
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/integrations \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /integrations/{integration_id}:
+    get:
+      operationId: getIntegration
+      tags:
+        - Integrations
+      summary: Retrieve integration
+      description: Returns an integration.
+      parameters:
+        - "$ref": "#/components/parameters/integrationId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegrationObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const integration = await embed.integrations.retrieve("github-123");
+
+            console.log(integration);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            integration = client.integrations.retrieve("github-123")
+
+            print(integration)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/integrations/github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+    put:
+      operationId: updateIntegration
+      tags:
+        - Integrations
+      summary: Update integration
+      description: Updates an integration.
+      parameters:
+        - "$ref": "#/components/parameters/integrationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateIntegrationRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegrationObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const integration = await embed.integrations.update("github-123", {
+              oauth_client_id: "...",
+              oauth_client_secret: "..."
+            });
+
+            console.log(integration);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            integration = client.integrations.update(
+              "github-123",
+              oauth_client_id="...",
+              oauth_client_secret="..."
+            )
+
+            print(integration)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/integrations/github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "oauth_client_id": "...",
+                "oauth_client_secret": "...",
+              }'
+    delete:
+      operationId: deleteIntegration
+      tags:
+        - Integrations
+      summary: Delete integration
+      description: Deletes an integration.
+      parameters:
+        - "$ref": "#/components/parameters/integrationId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteIntegrationResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const response = await embed.integrations.delete("github-123");
+
+            console.log(response);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            response = client.integrations.delete("github-123")
+
+            print(response)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/integrations/github-123 \
+              -X DELETE \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /integrations/{integration_id}/enable:
+    post:
+      operationId: enableIntegration
+      tags:
+        - Integrations
+      summary: Enable integration
+      description: Enables an integration.
+      parameters:
+        - "$ref": "#/components/parameters/integrationId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegrationObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const integration = await embed.integrations.enable("github-123");
+
+            console.log(integration);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            integration = client.integrations.enable("github-123")
+
+            print(integration)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/integrations/github-123/enable \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /integrations/{integration_id}/disable:
+    post:
+      operationId: disableIntegration
+      tags:
+        - Integrations
+      summary: Disable integration
+      description: Disables an integration.
+      parameters:
+        - "$ref": "#/components/parameters/integrationId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - "$ref": "#/components/schemas/IntegrationObject"
+                  - type: object
+                    properties:
+                      is_enabled:
+                        type: boolean
+                        example: false
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const integration = await embed.integrations.disable("github-123");
+
+            console.log(integration);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            integration = client.integrations.disable("github-123")
+
+            print(integration)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/integrations/github-123/disable \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /connections:
+    get:
+      operationId: listConnections
+      tags:
+        - Connections
+      summary: List connections
+      description: Returns a list of connections.
+      parameters:
+        - name: integration_id
+          in: query
+          description: Filter for connections belonging to a specific integration.
+          required: false
+          schema:
+            type: string
+        - "$ref": "#/components/parameters/limit"
+        - "$ref": "#/components/parameters/order"
+        - "$ref": "#/components/parameters/after"
+        - "$ref": "#/components/parameters/before"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListConnectionsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const connections = await embed.connections.list();
+
+            console.log(connections);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            connections = client.connections.list()
+
+            print(connections)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/connections \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+    post:
+      operationId: upsertConnection
+      tags:
+        - Connections
+      summary: Upsert connection
+      description: Manually add a connection. We recommend using the authentication flow provided by Embed. However, if you've already obtained account credentials, you can use them to create a connection with this endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertConnectionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectionObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const connection = await embed.connections.upsert({
+              id: "user-123",
+              integration_id: "github-123",
+              auth_scheme: "oauth",
+              credentials: {
+                "access_token": "...",
+                "refresh_token": "...",
+                "expires_at": "..."
+              }
+            });
+
+            console.log(connection);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            connection = client.connections.upsert(
+              id="user-123",
+              integration_id="github-123",
+              auth_scheme="oauth",
+              credentials={
+                "access_token": "...",
+                "refresh_token": "...",
+                "expires_at": "..."
+              }
+            )
+
+            print(connection)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/connections \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "id": "user-123",
+                "integration_id": "github-123",
+                "auth_scheme": "oauth",
+                "credentials": {
+                  "access_token": "...",
+                  "refresh_token": "...",
+                  "expires_at": "..."
+                }
+              }'
+
+  /connections/{connection_id}:
+    get:
+      operationId: getConnection
+      tags:
+        - Connections
+      summary: Retrieve connection
+      description: Returns a connection.
+      parameters:
+        - "$ref": "#/components/parameters/connectionId"
+        - name: integration_id
+          in: query
+          description: The integration to which the connection belongs.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectionObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const connection = await embed.connections.retrieve("user-123", {
+              integration_id: "github-123"
+            });
+
+            console.log(connection);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            connection = client.connections.retrieve(
+              "user-123",
+              integration_id="github-123"
+            )
+
+            print(connection)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/connections/user-123?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+    put:
+      operationId: updateConnection
+      tags:
+        - Connections
+      summary: Update connection
+      description: Updates a connection.
+      parameters:
+        - "$ref": "#/components/parameters/connectionId"
+        - name: integration_id
+          in: query
+          description: The integration to which the connection belongs.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateConnectionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - "$ref": "#/components/schemas/ConnectionObject"
+                  - type: object
+                    properties:
+                      metadata:
+                        type: object
+                        additionalProperties: true
+                        examples:
+                          - { "foo": "bar" }
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const updatedConnection = await embed.connections.update("user-123", {
+              integration_id: "github-123",
+              metadata: {
+                "foo": "bar",
+              }
+            });
+
+            console.log(updatedConnection);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            updated_connection = client.connections.update(
+              "user-123",
+              integration_id="github-123",
+              metadata={
+                "foo": "bar",
+              },
+            )
+
+            print(updated_connection)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/connections/user-123?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "metadata": {
+                  "foo": "bar",
+                }
+              }'
+    delete:
+      operationId: deleteConnection
+      tags:
+        - Connections
+      summary: Delete connection
+      description: Deletes a connection.
+      parameters:
+        - "$ref": "#/components/parameters/connectionId"
+        - name: integration_id
+          in: query
+          description: The integration to which the connection belongs.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteConnectionResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const response = await embed.connections.delete("user-123", {
+              integration_id: "github-123"
+            });
+
+            console.log(response);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            response = client.connections.delete(
+              "user-123"
+              integration_id="github-123"
+            )
+
+            print(response)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/connections/user-123?integration_id=github-123 \
+              -X DELETE \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /session-tokens:
+    post:
+      operationId: createSessionToken
+      tags:
+        - Session Tokens
+      summary: Create session token
+      description: Creates a session token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionTokenRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionTokenObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const sessionToken = await embed.sessionTokens.create({
+              integration_id: "github-123",
+              connection_id: "user-123",
+              expires_in_mins: 60,
+            });
+
+            console.log(sessionToken);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            session_token = client.session_tokens.create(
+              integration_id="github-123",
+              connection_id="user-123",
+              expires_in_mins=60
+            )
+
+            print(session_token)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/session-tokens \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "integration_id": "github-123",
+                "connection_id": "user-123",
+                "expires_in_mins": 60,
+              }'
+    get:
+      operationId: listSessionTokens
+      tags:
+        - Session Tokens
+      summary: List session tokens
+      description: Returns a list of session tokens.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListSessionTokensResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const sessionTokens = await embed.sessionTokens.list();
+
+            console.log(sessionTokens);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            session_tokens = client.session_tokens.list()
+
+            print(session_tokens)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/session-tokens \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /session-tokens/{token}:
+    get:
+      operationId: getSessionToken
+      tags:
+        - Session Tokens
+      summary: Retrieve session token
+      description: Returns a session token.
+      parameters:
+        - name: token
+          in: path
+          description: The unique token that identifies the session.
+          required: true
+          schema:
+            type: string
+            examples:
+              - token-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionTokenObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const sessionToken = await embed.sessionTokens.retrieve("token-123");
+
+            console.log(sessionToken);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            session_token = client.session_tokens.retrieve("token-123")
+
+            print(session_token)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/session-tokens/token-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+    delete:
+      operationId: deleteSessionToken
+      tags:
+        - Session Tokens
+      summary: Delete session token
+      description: Deletes a session token.
+      parameters:
+        - name: token
+          in: path
+          description: The unique token that identifies the session.
+          required: true
+          schema:
+            type: string
+            examples:
+              - token-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteSessionTokenResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const response = await embed.sessionTokens.delete("token-123");
+
+            console.log(response);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            response = client.session_tokens.delete("token-123")
+
+            print(response)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/session-tokens/token-123 \
+              -X DELETE \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /providers:
+    get:
+      operationId: listProviders
+      tags:
+        - Providers
+      summary: List providers
+      description: Returns a list of integration providers.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListProvidersResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const providers = await embed.providers.list();
+
+            console.log(providers);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            providers = client.providers.list()
+
+            print(providers)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/providers \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /providers/{provider_key}:
+    get:
+      operationId: getProvider
+      tags:
+        - Providers
+      summary: Retrieve provider
+      description: Returns a provider.
+      parameters:
+        - name: provider_key
+          in: path
+          description: The unique key of the provider.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const provider = await embed.providers.retrieve("github");
+
+            console.log(provider);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            provider = client.providers.retrieve("github")
+
+            print(provider)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/providers/github \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /collections:
+    get:
+      operationId: listCollections
+      tags:
+        - Collections
+      summary: List collections
+      description: Returns a list of collections.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collections belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCollectionsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const collections = await embed.collections.list({
+              integration_id: "github-123",
+            });
+
+            console.log(collections);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            collections = client.collections.list(
+              integration_id="github-123"
+            )
+
+            print(collections)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /collections/{collection_key}:
+    get:
+      operationId: getCollection
+      tags:
+        - Collections
+      summary: Retrieve collection
+      description: Returns a collection.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collection belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const collection = await embed.collections.retrieve("issues", {
+              integration_id: "github-123",
+            });
+
+            console.log(collection);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            collection = client.collections.retrieve(
+              "issues",
+              integration_id="github-123"
+            )
+
+            print(collection)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections/issues?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+    put:
+      operationId: updateCollection
+      tags:
+        - Collections
+      summary: Update collection
+      description: Updates a collection.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collection belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCollectionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const updatedCollection = await embed.collections.update("issues", {
+              integration_id: "github-123",
+              auto_start_syncs: true,
+            });
+
+            console.log(updatedCollection);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            updated_collection = client.collections.update(
+              "issues",
+              integration_id="github-123",
+              auto_start_syncs=True
+            )
+
+            print(updated_collection)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections/issues?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "auto_start_syncs": true,
+              }'
+  /collections/{collection_key}/enable:
+    post:
+      operationId: enableCollection
+      tags:
+        - Collections
+      summary: Enable collection
+      description: Enables a collection.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collection belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const collection = await embed.collections.enable("issues", {
+              integration_id: "github-123",
+            });
+
+            console.log(collection);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            collection = client.collections.enable(
+              "issues",
+              integration_id="github-123"
+            )
+
+            print(collection)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections/issues/enable?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /collections/{collection_key}/disable:
+    post:
+      operationId: disableCollection
+      tags:
+        - Collections
+      summary: Disable collection
+      description: Disables a collection.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collection belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - "$ref": "#/components/schemas/CollectionObject"
+                  - type: object
+                    properties:
+                      is_enabled:
+                        type: boolean
+                        example: false
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const collection = await embed.collections.disable("issues", {
+              integration_id: "github-123",
+            });
+
+            console.log(collection);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            collection = client.collections.disable(
+              "issues",
+              integration_id="github-123"
+            )
+
+            print(collection)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections/issues/disable?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /collections/{collection_key}/query:
+    post:
+      operationId: queryCollection
+      tags:
+        - Collections
+      summary: Query collection
+      description: Query a collection.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collection belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to use for the query.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryCollectionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryCollectionResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const query = await embed.collections.query("issues", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+              query: "Dark mode",
+              filter: {
+                state: "open",
+              }
+            });
+
+            console.log(query);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            query = client.collections.query(
+              "issues",
+              integration_id="github-123",
+              connection_id="user-123",
+              query="Dark mode",
+              filter={
+                "state": "open",
+              }
+            )
+
+            print(query)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections/issues/query?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "query": "Dark mode",
+                "filter": {
+                  "state": "open",
+                }
+              }'
+  /collections/schemas:
+    get:
+      operationId: listCollectionSchemas
+      tags:
+        - Collections
+      summary: List collection schemas
+      description: Returns a list of collection schemas.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collection schemas belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCollectionSchemasResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const collectionSchemas = await embed.collections.schemas.list({
+              integration_id: "github-123",
+            });
+
+            console.log(collectionSchemas);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            collection_schemas = client.collections.schemas.list(
+              integration_id="github-123"
+            )
+
+            print(collection_schemas)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections/schemas?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /collections/{collection_key}/schema:
+    get:
+      operationId: getCollectionSchema
+      tags:
+        - Collections
+      summary: Retrieve collection schema
+      description: Returns a collection schema.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the collection schema belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionSchema"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const collectionSchema = await embed.collections.schemas.retrieve("issues", {
+              integration_id: "github-123",
+            });
+
+            console.log(collectionSchema);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            collection_schema = client.collections.schemas.retrieve(
+              "issues",
+              integration_id="github-123"
+            )
+
+            print(collection_schema)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/collections/issues/schema?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /syncs:
+    get:
+      operationId: listSyncs
+      tags:
+        - Syncs
+      summary: List syncs
+      description: Returns a list of syncs.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the syncs belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the syncs belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListSyncsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const syncs = await embed.syncs.list({
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(syncs);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            syncs = client.syncs.list(
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(syncs)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /syncs/{collection_key}:
+    get:
+      operationId: getSync
+      tags:
+        - Syncs
+      summary: Retrieve sync
+      description: Returns a sync.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection being synced.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const sync = await embed.syncs.retrieve("issues", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(sync);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            sync = client.syncs.retrieve(
+              "issues",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(sync)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs/issues?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+    put:
+      operationId: updateSync
+      tags:
+        - Syncs
+      summary: Update sync
+      description: Updates a sync.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection being synced.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSyncRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const updatedSync = await embed.syncs.update("issues", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+              frequency: "daily",
+            });
+
+            console.log(updatedSync);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            updated_sync = client.syncs.update(
+              "issues",
+              integration_id="github-123",
+              connection_id="user-123",
+              frequency="daily"
+            )
+
+            print(updated_sync)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs/issues?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "frequency": "daily",
+              }'
+  /syncs/{collection_key}/start:
+    post:
+      operationId: startSync
+      tags:
+        - Syncs
+      summary: Start sync
+      description: Starts a sync.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection being synced.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const sync = await embed.syncs.start("issues", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(sync);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            sync = client.syncs.start(
+              "issues",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(sync)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs/issues/start?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /syncs/{collection_key}/stop:
+    post:
+      operationId: stopSync
+      tags:
+        - Syncs
+      summary: Stop sync
+      description: Stops a sync.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection being synced.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const sync = await embed.syncs.stop("issues", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(sync);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            sync = client.syncs.stop(
+              "issues",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(sync)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs/issues/stop?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /syncs/{collection_key}/trigger:
+    post:
+      operationId: triggerSync
+      tags:
+        - Syncs
+      summary: Trigger sync
+      description: Triggers a one-time sync run.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the sync belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection being synced.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const sync = await embed.syncs.trigger("issues", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(sync);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            sync = client.syncs.trigger(
+              "issues",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(sync)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs/issues/trigger?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /syncs/{collection_key}/runs:
+    get:
+      operationId: listSyncRuns
+      tags:
+        - Syncs
+      summary: List sync runs
+      description: Returns a list of recent sync runs.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the sync runs belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the sync runs belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection being synced.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListSyncRunsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const syncRuns = await embed.syncs.runs.list("issues", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(syncRuns);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            sync_runs = client.syncs.runs.list(
+              "issues",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(sync_runs)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs/issues/runs?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /syncs/{collection_key}/runs/{run_id}:
+    get:
+      operationId: getSyncRun
+      tags:
+        - Syncs
+      summary: Retrieve sync run
+      description: Returns a sync run.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the sync run belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the sync run belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: collection_key
+          in: path
+          description: The unique key of the collection being synced.
+          required: true
+          schema:
+            type: string
+            examples:
+              - issues
+        - name: run_id
+          in: path
+          description: The ID of the sync run.
+          required: true
+          schema:
+            type: string
+            examples:
+              - run-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncRunObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const syncRun = await embed.syncs.runs.retrieve("issues", "run-123", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(syncRun);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            sync_run = client.syncs.runs.retrieve(
+              "issues",
+              "run-123",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(sync_run)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/syncs/issues/runs/run-123?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /actions:
+    get:
+      operationId: listActions
+      tags:
+        - Actions
+      summary: List actions
+      description: Returns a list of actions.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the actions belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListActionsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const actions = await embed.actions.list({
+              integration_id: "github-123",
+            });
+
+            console.log(actions);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            actions = client.actions.list(
+              integration_id="github-123"
+            )
+
+            print(actions)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /actions/{action_key}:
+    get:
+      operationId: getAction
+      tags:
+        - Actions
+      summary: Retrieve action
+      description: Returns an action.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: action_key
+          in: path
+          description: The unique key of the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - create-issue
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const action = await embed.actions.retrieve("create-issue", {
+              integration_id: "github-123",
+            });
+
+            console.log(action);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action = client.actions.retrieve(
+              "create-issue",
+              integration_id="github-123"
+            )
+
+            print(action)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/create-issue?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /actions/{action_key}/trigger:
+    post:
+      operationId: triggerAction
+      tags:
+        - Actions
+      summary: Trigger action
+      description: Triggers an action.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to use for the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: action_key
+          in: path
+          description: The unique key of the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - create-issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TriggerActionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                description: The action response.
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const action = await embed.actions.trigger("create-issue", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+              input: {
+                title: "Support dark mode",
+                body: "It's too hard on the eyes at night.",
+              }
+            });
+
+            console.log(action);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action = client.actions.trigger(
+              "create-issue",
+              integration_id="github-123",
+              connection_id="user-123",
+              input={
+                "title": "Support dark mode",
+                "body": "It's too hard on the eyes at night.",
+              }
+            )
+
+            print(action)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/create-issue/trigger?integration_id=github-123&connection_id=user-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "input": {
+                  "title": "Support dark mode",
+                  "body": "It's too hard on the eyes at night."
+                }
+              }'
+  /actions/{action_key}/enable:
+    post:
+      operationId: enableAction
+      tags:
+        - Actions
+      summary: Enable action
+      description: Enables an action.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: action_key
+          in: path
+          description: The unique key of the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - create-issue
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const action = await embed.actions.enable("create-issue", {
+              integration_id: "github-123",
+            });
+
+            console.log(action);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action = client.actions.enable(
+              "create-issue",
+              integration_id="github-123"
+            )
+
+            print(action)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/create-issue/enable?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /actions/{action_key}/disable:
+    post:
+      operationId: disableAction
+      tags:
+        - Actions
+      summary: Disable action
+      description: Disables an action.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: action_key
+          in: path
+          description: The unique key of the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - create-issue
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - "$ref": "#/components/schemas/ActionObject"
+                  - type: object
+                    properties:
+                      is_enabled:
+                        type: boolean
+                        example: false
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const action = await embed.actions.disable("create-issue", {
+              integration_id: "github-123",
+            });
+
+            console.log(action);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action = client.actions.disable(
+              "create-issue",
+              integration_id="github-123"
+            )
+
+            print(action)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/create-issue/disable?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /actions/schemas:
+    get:
+      operationId: listActionSchemas
+      tags:
+        - Actions
+      summary: List action schemas
+      description: Returns a list of action schemas.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action schemas belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListActionSchemasResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const actionSchemas = await embed.actions.schemas.list({
+              integration_id: "github-123",
+            });
+
+            console.log(actionSchemas);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action_schemas = client.actions.schemas.list(
+              integration_id="github-123"
+            )
+
+            print(action_schemas)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/schemas?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /actions/{action_key}/schema:
+    get:
+      operationId: getActionSchema
+      tags:
+        - Actions
+      summary: Retrieve action schema
+      description: Returns an action schema.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action schema belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: action_key
+          in: path
+          description: The unique key of the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - create-issue
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionSchema"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const actionSchema = await embed.actions.schemas.retrieve("create-issue", {
+              integration_id: "github-123",
+            });
+
+            console.log(actionSchema);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action_schema = client.actions.schemas.retrieve(
+              "create-issue",
+              integration_id="github-123"
+            )
+
+            print(action_schema)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/create-issue/schema?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /proxy/{endpoint}:
+    get:
+      operationId: proxyGet
+      tags:
+        - Proxy
+      summary: GET
+      description: Proxy GET request with connection credentials.
+      parameters:
+        - name: endpoint
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The endpoint to proxy the request to.
+        - name: integration_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the integration to use for the request.
+        - name: connection_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the connection to use for the request.
+        - name: base_url_override
+          in: header
+          required: false
+          schema:
+            type: string
+            description: Override the base URL for the request.
+        - name: retries
+          in: header
+          required: false
+          schema:
+            type: integer
+            description: The number of times to retry the request.
+            default: 0
+            minimum: 0
+            maximum: 10
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                example: { "C": 78769, "Python": 7769 }
+            application/xml:
+              schema:
+                type: string
+            text/plain:
+              schema:
+                type: string
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const response = await embed.proxy.get("/repos/octocat/hello-world/languages", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(response);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            response = client.proxy.get(
+              "/repos/octocat/hello-world/languages",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(response)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/proxy/repos/octocat/hello-world/languages \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "X-Embed-Integration-Id: github-123" \
+              -H "X-Embed-Connection-Id: user-123"
+    post:
+      operationId: proxyPost
+      tags:
+        - Proxy
+      summary: POST
+      description: Proxy POST request with connection credentials.
+      parameters:
+        - name: endpoint
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The endpoint to proxy the request to.
+        - name: integration_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the integration to use for the request.
+        - name: connection_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the connection to use for the request.
+        - name: base_url_override
+          in: header
+          required: false
+          schema:
+            type: string
+            description: Override the base URL for the request.
+        - name: retries
+          in: header
+          required: false
+          schema:
+            type: integer
+            description: The number of times to retry the request.
+            default: 0
+            minimum: 0
+            maximum: 10
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                example:
+                  {
+                    "id": 1296269,
+                    "name": "Hello-World-2",
+                    "full_name": "octocat/Hello-World-2",
+                    "fork": true,
+                    "...": "...",
+                  }
+            application/xml:
+              schema:
+                type: string
+            text/plain:
+              schema:
+                type: string
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const response = await embed.proxy.post("/repos/octocat/hello-world/forks", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+              body: {
+                name: "Hello-World-2",
+                default_branch_only: true
+              }
+            });
+
+            console.log(response);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            response = client.proxy.post(
+              "/repos/octocat/hello-world/forks",
+              integration_id="github-123",
+              connection_id="user-123",
+              body={
+                "name": "Hello-World-2",
+                "default_branch_only": True
+              }
+            )
+
+            print(response)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/proxy/repos/octocat/hello-world/forks \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "X-Embed-Integration-Id: github-123" \
+              -H "X-Embed-Connection-Id: user-123" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "name": "Hello-World-2",
+                "default_branch_only": true
+              }'
+    put:
+      operationId: proxyPut
+      tags:
+        - Proxy
+      summary: PUT
+      description: Proxy PUT request with connection credentials.
+      parameters:
+        - name: endpoint
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The endpoint to proxy the request to.
+        - name: integration_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the integration to use for the request.
+        - name: connection_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the connection to use for the request.
+        - name: base_url_override
+          in: header
+          required: false
+          schema:
+            type: string
+            description: Override the base URL for the request.
+        - name: retries
+          in: header
+          required: false
+          schema:
+            type: integer
+            description: The number of times to retry the request.
+            default: 0
+            minimum: 0
+            maximum: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                example:
+                  {
+                    "content":
+                      {
+                        "name": "README.md",
+                        "path": "README.md",
+                        "sha": "95b966ae1c166bd92f8ae7d1c313e738c731dfc3",
+                        "...": "...",
+                      },
+                    "commit":
+                      {
+                        "sha": "7638417db6dkf4f4d2d8d6c1b6d2d4f2d8d2d4f",
+                        "message": "Updated README.md",
+                        "...": "...",
+                      },
+                  }
+            application/xml:
+              schema:
+                type: string
+            text/plain:
+              schema:
+                type: string
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const response = await embed.proxy.put("/repos/octocat/hello-world/contents/readme.md", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+              body: {
+                message: 'Updated README.md',
+                content: 'bXkgbmV3IGZpbGUgY29udGVudHM=',
+              }
+            });
+
+            console.log(response);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            response = client.proxy.put(
+              "/repos/octocat/hello-world/contents/readme.md",
+              integration_id="github-123",
+              connection_id="user-123",
+              body={
+                "message": "Updated README.md",
+                "content": "bXkgbmV3IGZpbGUgY29udGVudHM="
+              }
+            )
+
+            print(response)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/proxy/repos/octocat/hello-world/contents/readme.md \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "X-Embed-Integration-Id: github-123" \
+              -H "X-Embed-Connection-Id: user-123" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "message": "Updated README.md",
+                "content": "bXkgbmV3IGZpbGUgY29udGVudHM="
+              }'
+    delete:
+      operationId: proxyDelete
+      tags:
+        - Proxy
+      summary: DELETE
+      description: Proxy DELETE request with connection credentials.
+      parameters:
+        - name: endpoint
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The endpoint to proxy the request to.
+        - name: integration_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the integration to use for the request.
+        - name: connection_id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: The ID of the connection to use for the request.
+        - name: base_url_override
+          in: header
+          required: false
+          schema:
+            type: string
+            description: Override the base URL for the request.
+        - name: retries
+          in: header
+          required: false
+          schema:
+            type: integer
+            description: The number of times to retry the request.
+            default: 0
+            minimum: 0
+            maximum: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                example:
+                  {
+                    "content": null,
+                    "commit":
+                      {
+                        "sha": "7638417db6d59f3c431d3e1f261cc637155684cd",
+                        "message": "Deleted hello.txt",
+                        "...": "...",
+                      },
+                  }
+            application/xml:
+              schema:
+                type: string
+            text/plain:
+              schema:
+                type: string
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const response = await embed.proxy.delete("/repos/octocat/hello-world/contents/hello.txt", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+              body: {
+                message: 'Deleted hello.txt',
+                sha: '95b966ae1c166bd92f8ae7d1c313e738c731dfc3',
+              }
+            });
+
+            console.log(response);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            response = client.proxy.delete(
+              "/repos/octocat/hello-world/contents/hello.txt",
+              integration_id="github-123",
+              connection_id="user-123",
+              body={
+                "message": "Deleted hello.txt",
+                "sha": "95b966ae1c166bd92f8ae7d1c313e738c731dfc3"
+              }
+            )
+
+            print(response)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/proxy/repos/octocat/hello-world/contents/hello.txt \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "X-Embed-Integration-Id: github-123" \
+              -H "X-Embed-Connection-Id: user-123" \
+              -H "Content-Type: application/json" \
+              -X DELETE \
+              -d '{
+                "message": "Deleted hello.txt",
+                "sha": "95b966ae1c166bd92f8ae7d1c313e738c731dfc3"
+              }'
+  /webhooks:
+    post:
+      operationId: createWebhook
+      tags:
+        - Webhooks
+      summary: Create webhook
+      description: Creates a webhook.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWebhookRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const webhook = await embed.webhooks.create({
+              url: "https://my-app.com/webhook",
+              events: ["sync.succeeded", "sync.failed"]
+            });
+
+            console.log(webhook);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            webhook = client.webhooks.create(
+              url="https://my-app.com/webhook",
+              events=["sync.succeeded", "sync.failed"]
+            )
+
+            print(webhook)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "url": "https://my-app.com/webhook",
+                "events": ["sync.succeeded", "sync.failed"]
+              }'
+    get:
+      operationId: listWebhooks
+      tags:
+        - Webhooks
+      summary: List webhooks
+      description: Returns a list of webhooks.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListWebhooksResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const webhooks = await embed.webhooks.list();
+
+            console.log(webhooks);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            webhooks = client.webhooks.list()
+
+            print(webhooks)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /webhooks/{webhook_id}:
+    get:
+      operationId: getWebhook
+      tags:
+        - Webhooks
+      summary: Retrieve webhook
+      description: Returns a webhook.
+      parameters:
+        - name: webhook_id
+          in: path
+          description: The unique identifier for the webhook.
+          required: true
+          schema:
+            type: string
+            examples:
+              - webhook-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const webhook = await embed.webhooks.retrieve("webhook-123");
+
+            console.log(webhook);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            webhook = client.webhooks.retrieve("webhook-123")
+
+            print(webhook)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks/webhook-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+    put:
+      operationId: updateWebhook
+      tags:
+        - Webhooks
+      summary: Update webhook
+      description: Updates a webhook.
+      parameters:
+        - name: webhook_id
+          in: path
+          description: The unique identifier for the webhook.
+          required: true
+          schema:
+            type: string
+            examples:
+              - webhook-123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWebhookRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const updatedWebhook = await embed.webhooks.update("webhook-123", {
+              events: ["sync.succeeded", "sync.failed"]
+            });
+
+            console.log(updatedWebhook);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            updated_webhook = client.webhooks.update(
+              "webhook-123",
+              events=["sync.succeeded", "sync.failed"]
+            )
+
+            print(updated_webhook)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks/webhook-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "events": ["sync.succeeded", "sync.failed"]
+              }'
+    delete:
+      operationId: deleteWebhook
+      tags:
+        - Webhooks
+      summary: Delete webhook
+      description: Deletes a webhook.
+      parameters:
+        - name: webhook_id
+          in: path
+          description: The unique identifier for the webhook.
+          required: true
+          schema:
+            type: string
+            examples:
+              - webhook-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteWebhookResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const webhook = await embed.webhooks.delete("webhook-123");
+
+            console.log(webhook);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            webhook = client.webhooks.delete("webhook-123")
+
+            print(webhook)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks/webhook-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X DELETE
+  /webhooks/{webhook_id}/enable:
+    post:
+      operationId: enableWebhook
+      tags:
+        - Webhooks
+      summary: Enable webhook
+      description: Enables a webhook.
+      parameters:
+        - name: webhook_id
+          in: path
+          description: The unique identifier for the webhook.
+          required: true
+          schema:
+            type: string
+            examples:
+              - webhook-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const webhook = await embed.webhooks.enable("webhook-123");
+
+            console.log(webhook);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            webhook = client.webhooks.enable("webhook-123")
+
+            print(webhook)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks/webhook-123/enable \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /webhooks/{webhook_id}/disable:
+    post:
+      operationId: disableWebhook
+      tags:
+        - Webhooks
+      summary: Disable webhook
+      description: Disables a webhook.
+      parameters:
+        - name: webhook_id
+          in: path
+          description: The unique identifier for the webhook.
+          required: true
+          schema:
+            type: string
+            examples:
+              - webhook-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - "$ref": "#/components/schemas/WebhookObject"
+                  - type: object
+                    properties:
+                      is_enabled:
+                        type: boolean
+                        example: false
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const webhook = await embed.webhooks.disable("webhook-123");
+
+            console.log(webhook);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            webhook = client.webhooks.disable("webhook-123")
+
+            print(webhook)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks/webhook-123/disable \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -X POST
+  /webhooks/{webhook_id}/events:
+    get:
+      operationId: listWebhookEvents
+      tags:
+        - Webhooks
+      summary: List webhook events
+      description: Returns a list of recent events for a webhook.
+      parameters:
+        - name: webhook_id
+          in: path
+          description: The unique identifier for the webhook.
+          required: true
+          schema:
+            type: string
+            examples:
+              - webhook-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListWebhookEventsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const events = await embed.webhooks.events.list("webhook-123");
+
+            console.log(events);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            events = client.webhooks.events.list("webhook-123")
+
+            print(events)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks/webhook-123/events \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /webhooks/{webhook_id}/events/{event_id}:
+    get:
+      operationId: getWebhookEvent
+      tags:
+        - Webhooks
+      summary: Retrieve webhook event
+      description: Returns a webhook event.
+      parameters:
+        - name: webhook_id
+          in: path
+          description: The unique identifier for the webhook.
+          required: true
+          schema:
+            type: string
+            examples:
+              - webhook-123
+        - name: event_id
+          in: path
+          description: The unique identifier for the event.
+          required: true
+          schema:
+            type: string
+            examples:
+              - event-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEventObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const event = await embed.webhooks.events.retrieve("webhook-123", "event-123");
+
+            console.log(event);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            event = client.webhooks.events.retrieve("webhook-123", "event-123")
+
+            print(event)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/webhooks/webhook-123/events/event-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: "bearer"
+
+  parameters:
+    integrationId:
+      name: integration_id
+      in: path
+      description: The unique identifier for the integration.
+      required: true
+      schema:
+        type: string
+        examples:
+          - github-123
+
+    connectionId:
+      name: connection_id
+      in: path
+      description: The unique identifier for the connection.
+      required: true
+      schema:
+        type: string
+        examples:
+          - user-123
+
+    limit:
+      name: limit
+      in: query
+      description: A limit on the number of objects to be returned.
+      required: false
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+        examples:
+          - 20
+
+    order:
+      name: order
+      in: query
+      description: Sort order by the `created_at` timestamp of the objects.
+      required: false
+      schema:
+        type: string
+        default: desc
+        enum: ["asc", "desc"]
+        examples:
+          - desc
+
+    after:
+      name: after
+      in: query
+      description: A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+      required: false
+      schema:
+        type: string
+
+    before:
+      name: before
+      in: query
+      description: A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+      required: false
+      schema:
+        type: string
+
+  schemas:
+    IntegrationObject:
+      type: object
+      title: Integration
+      description: Represents an integration with a third-party provider.
+      properties:
+        object:
+          description: The object type, which is always `integration`.
+          type: string
+          enum: ["integration"]
+        id:
+          description: The unique identifier for the integration.
+          type: string
+          examples:
+            - github-123
+        provider_key:
+          description: The unique key of the integration provider.
+          type: string
+          examples:
+            - github
+        auth_scheme:
+          description: The authentication scheme the integration uses.
+          type: string
+          enum: [oauth2, oauth1, basic, api_key]
+          examples:
+            - oauth2
+        is_enabled:
+          description: Whether the integration is enabled.
+          type: boolean
+          examples:
+            - true
+        logo_url:
+          description: The URL of the integration provider's logo.
+          type: string
+          examples:
+            - https://embed-integrations.s3.amazonaws.com/github.svg
+        logo_url_dark_mode:
+          description: The URL of the integration provider's logo suitable for dark mode.
+          type: [string, "null"]
+          examples:
+            - https://embed-integrations.s3.amazonaws.com/github-dark.svg
+        is_using_test_credentials:
+          type: boolean
+          description: Whether the integration is using test credentials provided by Embed.
+          examples:
+            - false
+        oauth_client_id:
+          type: [string, "null"]
+          description: The OAuth Client ID. Required for integrations that use OAuth.
+          examples:
+            - "..."
+        oauth_client_secret:
+          type: [string, "null"]
+          description: The OAuth Client Secret. Required for integrations that use OAuth.
+          examples:
+            - "..."
+        oauth_scopes:
+          type: array
+          items:
+            type: string
+          description: Additional OAuth scopes to request from the user. By default, Embed will request the minimum required scopes for the collections and actions enabled on the integration.
+          examples:
+            - []
+        created_at:
+          description: The Unix timestamp (in seconds) for when the integration was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the integration was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - id
+        - provider_key
+        - auth_scheme
+        - is_enabled
+        - logo_url
+        - is_using_test_credentials
+        - oauth_client_id
+        - oauth_client_secret
+        - oauth_scopes
+        - created_at
+        - updated_at
+
+    CreateIntegrationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the integration.
+          examples:
+            - github-123
+        provider_key:
+          type: string
+          description: The unique key of the integration provider.
+          examples:
+            - github
+        auth_scheme:
+          type: string
+          enum: [oauth1, oauth2, basic, api_key]
+          description: The authentication scheme the integration should use. Only applicable for providers that support multiple auth schemes.
+          examples:
+            - oauth2
+        use_test_credentials:
+          type: boolean
+          description: Use test credentials provided by Embed. Only available in staging environment.
+          examples:
+            - false
+        oauth_client_id:
+          type: [string, "null"]
+          description: The OAuth Client ID. Required for integrations that use OAuth.
+        oauth_client_secret:
+          type: [string, "null"]
+          description: The OAuth Client Secret. Required for integrations that use OAuth.
+        oauth_scopes:
+          type: array
+          items:
+            type: string
+          description: Additional OAuth scopes to request from the user. By default, Embed will request the minimum required scopes for the collections and actions enabled on the integration.
+      required:
+        - provider_key
+
+    ListIntegrationsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/IntegrationObject"
+        first_id:
+          type: [string, "null"]
+          examples:
+            - github-123
+        last_id:
+          type: [string, "null"]
+          examples:
+            - null
+        has_more:
+          type: boolean
+          examples:
+            - false
+      required:
+        - object
+        - data
+
+    UpdateIntegrationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        is_using_test_credentials:
+          type: boolean
+          description: Whether the integration is using test credentials provided by Embed.
+          examples:
+            - false
+        oauth_client_id:
+          type: [string, "null"]
+          description: The OAuth Client ID. Required for integrations that use OAuth authentication.
+        oauth_client_secret:
+          type: [string, "null"]
+          description: The OAuth Client Secret. Required for integrations that use OAuth authentication.
+        oauth_scopes:
+          type: array
+          items:
+            type: string
+          description: Additional OAuth scopes to request from the user. By default, Embed will request the minimum required scopes for the collections and actions enabled on the integration.
+
+    DeleteIntegrationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [integration]
+        id:
+          type: string
+          examples:
+            - github-123
+        deleted:
+          type: boolean
+          examples:
+            - true
+      required:
+        - object
+        - id
+        - deleted
+
+    ConnectionObject:
+      type: object
+      title: Connection
+      description: Represents an account connected to an integration.
+      properties:
+        object:
+          description: The object type, which is always `connection`.
+          type: string
+          enum: ["connection"]
+        id:
+          description: The unique identifier for the connection.
+          type: string
+          examples:
+            - user-123
+        integration_id:
+          description: The unique identifier of the integration used by the connection.
+          type: string
+          examples:
+            - github-123
+        auth_scheme:
+          description: The authentication scheme the connection uses.
+          type: string
+          enum: [oauth2, oauth1, basic, api_key]
+          examples:
+            - oauth2
+        configuration:
+          description: Configuration options for the connection.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        inclusions:
+          description: Inclusion rules for the connection.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        exclusions:
+          description: Exclusions rules for the connection.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        metadata:
+          description: Additional metadata associated with the connection.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        created_at:
+          description: The Unix timestamp (in seconds) for when the connection was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the connection was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - id
+        - integration_id
+        - auth_scheme
+        - configuration
+        - inclusions
+        - exclusions
+        - metadata
+        - created_at
+        - updated_at
+
+    UpsertConnectionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          description: The unique identifier for the connection.
+          type: string
+        integration_id:
+          description: The unique identifier of the integration used by the connection.
+          type: string
+        auth_scheme:
+          type: string
+          enum: [oauth2, oauth1, basic, api_key]
+          description: The authentication scheme the connection should use.
+          examples:
+            - oauth2
+        credentials:
+          type: object
+          description: The connection's account credentials.
+          oneOf:
+            - $ref: "#/components/schemas/OAuth2Credentials"
+            - $ref: "#/components/schemas/OAuth1Credentials"
+            - $ref: "#/components/schemas/BasicCredentials"
+            - $ref: "#/components/schemas/ApiKeyCredentials"
+        configuration:
+          type: [object, "null"]
+          description: Configuration options for the connection.
+          additionalProperties: true
+          examples:
+            - null
+        inclusions:
+          type: [object, "null"]
+          description: Inclusion rules for the connection. Only applicable for integrations that support inclusions.
+          additionalProperties: true
+          examples:
+            - null
+        exclusions:
+          type: [object, "null"]
+          description: Exclusion rules for the connection. Only applicable for integrations that support exclusions.
+          additionalProperties: true
+          examples:
+            - null
+        metadata:
+          type: [object, "null"]
+          description: Additional metadata for the connection.
+          additionalProperties: true
+          examples:
+            - null
+      required:
+        - id
+        - integration_id
+        - auth_scheme
+        - credentials
+
+    OAuth2Credentials:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: The OAuth 2.0 access token.
+        refresh_token:
+          type: string
+          description: The OAuth 2.0 refresh token.
+        expires_at:
+          type: integer
+          description: The timestamp when the access token expires.
+      required:
+        - access_token
+        - refresh_token
+        - expires_at
+
+    OAuth1Credentials:
+      type: object
+      properties:
+        oauth_token:
+          type: string
+          description: The OAuth 1.0a token.
+        token_secret:
+          type: string
+          description: The OAuth 1.0a token.
+      required:
+        - oauth_token
+        - token_secret
+
+    BasicCredentials:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username required for `basic` auth.
+        password:
+          type: string
+          description: The password required for `basic` auth.
+      required:
+        - username
+        - password
+
+    ApiKeyCredentials:
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: The API key.
+      required:
+        - api_key
+
+    ListConnectionsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConnectionObject"
+        first_id:
+          type: [string, "null"]
+          examples:
+            - user-123
+        last_id:
+          type: [string, "null"]
+          examples:
+            - null
+        has_more:
+          type: boolean
+          examples:
+            - false
+      required:
+        - object
+        - data
+
+    UpdateConnectionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        inclusions:
+          type: [object, "null"]
+          description: Inclusion rules for the connection. Only applicable for integrations that support inclusions.
+          additionalProperties: true
+        exclusions:
+          type: [object, "null"]
+          description: Exclusion rules for the connection. Only applicable for integrations that support exclusions.
+          additionalProperties: true
+        metadata:
+          type: [object, "null"]
+          description: Additional metadata for the connection.
+          additionalProperties: true
+          examples:
+            - { "foo": "bar" }
+
+    DeleteConnectionResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [connection]
+        id:
+          type: string
+          examples:
+            - user-123
+        deleted:
+          type: boolean
+          examples:
+            - true
+      required:
+        - object
+        - id
+        - deleted
+
+    SessionTokenObject:
+      type: object
+      title: SessionToken
+      description: Represents a session token for a user.
+      properties:
+        object:
+          description: The object type, which is always `session_token`.
+          type: string
+          enum: ["session_token"]
+        token:
+          description: The unique token that identifies the session.
+          type: string
+          examples:
+            - token-123
+        url:
+          description: The magic link used to connect an account with the session token.
+          type: string
+          examples:
+            - https://api.useembed.com/session/token-123
+        integration_id:
+          description: The unique identifier of the integration to connect the account to.
+          type: string
+          examples:
+            - github-123
+        connection_id:
+          description: The unique identifier of the connection.
+          type: [string, "null"]
+          examples:
+            - user-123
+        expires_at:
+          description: The Unix timestamp (in seconds) for when the session token expires.
+          type: integer
+          examples:
+            - 1718312375
+        redirect_url:
+          description: The URL to redirect to after the authentication flow is complete.
+          type: [string, "null"]
+          examples:
+            - https://my-app.com/callback
+        auth_scheme:
+          description: The authentication scheme to use to connect the account. Only applicable for integrations that support multiple auth schemes.
+          type: string
+          enum: [oauth2, oauth1, basic, api_key]
+          examples:
+            - oauth2
+        configuration:
+          description: Configuration options to assign to the connection.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        inclusions:
+          description: Inclusion rules to assign to the connection. Only applicable for integrations that support inclusions.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        exclusions:
+          description: Exclusion rules to assign to the connection. Only applicable for integrations that support exclusions.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        metadata:
+          description: Additional metadata to assign to the connection.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        created_at:
+          description: The Unix timestamp (in seconds) for when the session token was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the session token was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - token
+        - url
+        - integration_id
+        - connection_id
+        - expires_at
+        - redirect_url
+        - auth_scheme
+        - configuration
+        - inclusions
+        - exclusions
+        - metadata
+        - created_at
+        - updated_at
+
+    CreateSessionTokenRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        integration_id:
+          type: string
+          description: The unique identifier of the integration to connect the account to.
+          examples:
+            - github-123
+        connection_id:
+          type: string
+          description: The unique identifier to assign to the connection.
+          examples:
+            - user-123
+        expires_in_mins:
+          type: integer
+          description: The number of minutes until the session token expires.
+          default: 60
+          examples:
+            - 60
+        redirect_url:
+          type: [string, "null"]
+          description: The URL to redirect to after the authentication flow is complete.
+          examples:
+            - https://my-app.com/callback
+        auth_scheme:
+          type: string
+          enum: [oauth2, oauth1, basic, api_key]
+          description: The authentication scheme to use to connect the account. Only applicable for integrations that support multiple auth schemes.
+          examples:
+            - oauth2
+        configuration:
+          type: [object, "null"]
+          description: Configuration options to assign to the connection.
+          additionalProperties: true
+          examples:
+            - null
+        inclusions:
+          type: [object, "null"]
+          description: Inclusion rules to assign to the connection. Only applicable for integrations that support inclusions.
+          additionalProperties: true
+          examples:
+            - null
+        exclusions:
+          type: [object, "null"]
+          description: Exclusion rules to assign to the connection. Only applicable for integrations that support exclusions.
+          additionalProperties: true
+          examples:
+            - null
+        metadata:
+          type: [object, "null"]
+          description: Additional metadata to assign to the connection.
+          additionalProperties: true
+          examples:
+            - null
+      required:
+        - integration_id
+
+    ListSessionTokensResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionTokenObject"
+      required:
+        - object
+        - data
+
+    DeleteSessionTokenResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [session_token]
+        token:
+          type: string
+          examples:
+            - token-123
+        deleted:
+          type: boolean
+          examples:
+            - true
+      required:
+        - object
+        - token
+        - deleted
+
+    CollectionObject:
+      type: object
+      title: Collection
+      description: Represents a collection of records from a third-party provider.
+      properties:
+        object:
+          description: The object type, which is always `collection`.
+          type: string
+          enum: ["collection"]
+        unique_key:
+          description: The unique key of the collection.
+          type: string
+          examples:
+            - issues
+        integration_id:
+          description: The ID of the integration to which the collection belongs.
+          type: string
+          examples:
+            - github-123
+        provider_key:
+          description: The unique key of the integration provider.
+          type: string
+          examples:
+            - github
+        is_enabled:
+          description: Whether the collection is enabled.
+          type: boolean
+          examples:
+            - true
+        default_sync_frequency:
+          description: The default sync frequency for the collection.
+          type: string
+          enum: [real_time, hourly, daily, weekly, monthly]
+          examples:
+            - daily
+        auto_start_syncs:
+          description: Whether to automatically start syncing this collection after a connection is created.
+          type: boolean
+          examples:
+            - true
+        exclude_properties_from_syncs:
+          description: An array of properties to exclude from being synced.
+          type: array
+          items:
+            type: string
+          examples:
+            - []
+        created_at:
+          description: The Unix timestamp (in seconds) for when the collection was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the collection was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - unique_key
+        - integration_id
+        - provider_key
+        - is_enabled
+        - default_sync_frequency
+        - auto_start_syncs
+        - exclude_properties_from_syncs
+        - created_at
+        - updated_at
+
+    ListCollectionsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollectionObject"
+      required:
+        - object
+        - data
+
+    UpdateCollectionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        default_sync_frequency:
+          type: string
+          enum: [real_time, hourly, daily, weekly, monthly]
+          description: The default sync frequency for the collection.
+          examples:
+            - daily
+        auto_start_syncs:
+          type: boolean
+          description: Whether to automatically start syncing this collection after a connection is created.
+          examples:
+            - true
+        exclude_properties_from_syncs:
+          type: array
+          items:
+            type: string
+          description: An array of properties to exclude from being synced.
+          examples:
+            - []
+        configuration:
+          type: [object, "null"]
+          description: Configuration options for the collection.
+          additionalProperties: true
+          examples:
+            - null
+
+    CollectionSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the schema.
+          examples:
+            - Issues
+        description:
+          type: string
+          description: A description of the schema.
+          examples:
+            - Issues are a great way to keep track of tasks, enhancements, and bugs in Github.
+        properties:
+          type: object
+          description: The properties of the schema.
+          additionalProperties: true
+          examples:
+            - {
+                "id":
+                  {
+                    "type": "string",
+                    "description": "The unique identifier of the issue.",
+                  },
+                "title":
+                  {
+                    "type": "string",
+                    "description": "The title of the issue.",
+                  },
+                "body":
+                  { "type": "string", "description": "The body of the issue." },
+                "url":
+                  { "type": "string", "description": "The URL of the issue." },
+                "number":
+                  {
+                    "type": "integer",
+                    "description": "Number uniquely identifying the issue within its repository.",
+                  },
+                "state":
+                  {
+                    "type": "string",
+                    "description": "State of the issue; either 'open' or 'closed'",
+                  },
+                "created_at":
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The date the issue was created.",
+                  },
+                "updated_at":
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The date the issue was last updated.",
+                  },
+              }
+        required:
+          type: array
+          items:
+            type: string
+          description: The required properties of the schema.
+          examples:
+            - [
+                "id",
+                "title",
+                "url",
+                "number",
+                "state",
+                "created_at",
+                "updated_at",
+              ]
+      required:
+        - name
+        - description
+        - properties
+
+    ListCollectionSchemasResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollectionSchema"
+      required:
+        - object
+        - data
+
+    QueryCollectionRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of query.
+          enum: [hybrid, vector, keyword]
+          default: hybrid
+        query:
+          type: string
+          description: The query string to match against.
+        filter:
+          type: object
+          description: The filter to apply to the query.
+          additionalProperties: true
+        image:
+          type: string
+          description: The URL or base-64 string of the image to match against. Only applicable for `vector` queries.
+        alpha:
+          type: number
+          description: The relative weight used to merge vector and hybrid result sets. Only applicable for `hybrid` queries.
+          default: 0.5
+        limit:
+          type: integer
+          description: A limit on the number of objects to be returned.
+          default: 20
+          minimum: 1
+          maximum: 100
+        return_properties:
+          type: array
+          items:
+            type: string
+          description: Specify properties you want to return in the results set.
+
+    QueryCollectionResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            type: object
+            description: The data objects returned by the query.
+            additionalProperties: true
+          examples:
+            - [
+                {
+                  "id": "123",
+                  "title": "Support dark mode",
+                  "body": "It's too difficult to use the application at night.",
+                  "url": "https://api.github.com/repos/octocat/Hello-World/issues/123",
+                  "number": 1,
+                  "state": "open",
+                  "created_at": "2024-06-01T00:00:00Z",
+                  "updated_at": "2024-06-01T00:00:00Z",
+                },
+              ]
+      required:
+        - object
+        - data
+
+    SyncObject:
+      type: object
+      title: Sync
+      description: Represents the continuous synchronization of a collection.
+      properties:
+        object:
+          description: The object type, which is always `sync`.
+          type: string
+          enum: ["sync"]
+        collection_key:
+          description: The unique key of the collection being synced.
+          type: string
+          examples:
+            - issues
+        integration_id:
+          description: The unique identifier of the integration to which the sync belongs.
+          type: string
+          examples:
+            - github-123
+        connection_id:
+          description: The unique identifier of the connection to which the sync belongs.
+          type: string
+          examples:
+            - user-123
+        provider_key:
+          description: The unique key of the integration provider.
+          type: string
+          examples:
+            - github
+        status:
+          description: The status of the sync.
+          type: string
+          enum: [running, stopped, error]
+          examples:
+            - running
+        frequency:
+          description: The frequency of the sync.
+          type: string
+          enum: [real_time, hourly, daily, weekly, monthly]
+          examples:
+            - daily
+        last_synced_at:
+          description: The Unix timestamp (in seconds) for when the collection was last synced.
+          type: [integer, "null"]
+          examples:
+            - 1718312375
+        created_at:
+          description: The Unix timestamp (in seconds) for when the sync was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the sync was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - collection_key
+        - integration_id
+        - connection_id
+        - provider_key
+        - status
+        - frequency
+        - last_synced_at
+        - created_at
+        - updated_at
+
+    ListSyncsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SyncObject"
+      required:
+        - object
+        - data
+
+    UpdateSyncRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        frequency:
+          type: string
+          description: The frequency of the sync.
+          enum: [real_time, hourly, daily, weekly, monthly]
+          examples:
+            - daily
+
+    DeleteSyncResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [sync]
+        collection_key:
+          type: string
+          examples:
+            - issues
+        deleted:
+          type: boolean
+          examples:
+            - true
+      required:
+        - object
+        - collection_key
+        - deleted
+
+    SyncRunObject:
+      type: object
+      title: SyncRun
+      description: Represents a single run of a sync.
+      properties:
+        object:
+          description: The object type, which is always `sync_run`.
+          type: string
+          enum: ["sync_run"]
+        id:
+          description: The unique identifier of the sync run.
+          type: string
+          examples:
+            - run-123
+        collection_key:
+          description: The unique key of the collection being synced.
+          type: string
+          examples:
+            - issues
+        integration_id:
+          description: The unique identifier of the integration to which the sync belongs.
+          type: string
+          examples:
+            - github-123
+        connection_id:
+          description: The unique identifier of the connection to which the sync belongs.
+          type: string
+          examples:
+            - user-123
+        status:
+          description: The status of the sync run.
+          type: string
+          enum: [running, stopped, completed, failed]
+          examples:
+            - running
+        records_added:
+          description: The number of records added during the sync run.
+          type: [integer, "null"]
+          examples:
+            - 10
+        records_updated:
+          description: The number of records updated during the sync run.
+          type: [integer, "null"]
+          examples:
+            - 5
+        records_deleted:
+          description: The number of records deleted during the sync run.
+          type: [integer, "null"]
+          examples:
+            - 2
+        created_at:
+          description: The Unix timestamp (in seconds) for when the sync run was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the sync run was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - id
+        - collection_key
+        - integration_id
+        - connection_id
+        - status
+        - records_added
+        - records_updated
+        - records_deleted
+        - created_at
+        - updated_at
+
+    ListSyncRunsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SyncRunObject"
+      required:
+        - object
+        - data
+
+    ActionObject:
+      type: object
+      title: Action
+      description: Represents an action that can be performed on a collection.
+      properties:
+        object:
+          description: The object type, which is always `action`.
+          type: string
+          enum: ["action"]
+        unique_key:
+          description: The unique key of the action.
+          type: string
+          examples:
+            - create-issue
+        integration_id:
+          description: The ID of the integration to which the action belongs.
+          type: string
+          examples:
+            - github-123
+        provider_key:
+          description: The unique key of the integration provider.
+          type: string
+          examples:
+            - github
+        is_enabled:
+          description: Whether the action is enabled.
+          type: boolean
+          examples:
+            - true
+        created_at:
+          description: The Unix timestamp (in seconds) for when the action was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the action was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - unique_key
+        - integration_id
+        - provider_key
+        - is_enabled
+        - created_at
+        - updated_at
+
+    ListActionsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionObject"
+      required:
+        - object
+        - data
+
+    TriggerActionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        input:
+          type: object
+          description: The input parameters for the action.
+          additionalProperties: true
+          examples:
+            - {
+                "title": "Support dark mode",
+                "body": "It's too difficult to use the application at night.",
+              }
+      required:
+        - input
+
+    ActionSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the action schema.
+          examples:
+            - Create Issue
+        description:
+          type: string
+          description: A description of the action schema.
+          examples:
+            - Create an issue in Github.
+        parameters:
+          type: object
+          description: The input schema of the action.
+          properties:
+            type:
+              type: string
+              description: The type of the input schema.
+              enum: [object]
+              examples:
+                - object
+            properties:
+              type: object
+              description: The properties of the input schema.
+              additionalProperties: true
+              examples:
+                - {
+                    "title":
+                      {
+                        "type": "string",
+                        "description": "The title of the issue.",
+                      },
+                    "body":
+                      {
+                        "type": "string",
+                        "description": "The body of the issue.",
+                      },
+                  }
+            required:
+              type: array
+              items:
+                type: string
+              description: The required properties of the input schema.
+              examples:
+                - ["title"]
+          required:
+            - type
+            - properties
+      required:
+        - name
+        - description
+        - parameters
+
+    ListActionSchemasResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionSchema"
+      required:
+        - object
+        - data
+
+    WebhookObject:
+      type: object
+      title: Webhook
+      description: Represents a webhook that can be used to receive events from Embed.
+      properties:
+        object:
+          description: The object type, which is always `webhook`.
+          type: string
+          enum: ["webhook"]
+        id:
+          description: The unique identifier for the webhook.
+          type: string
+          examples:
+            - webhook-123
+        url:
+          description: The URL to send events to.
+          type: string
+          examples:
+            - https://my-app.com/webhook
+        events:
+          description: The events to send to the webhook.
+          type: array
+          items:
+            type: string
+          examples:
+            - ["sync.succeeded", "sync.failed"]
+        is_enabled:
+          description: Whether the webhook is enabled.
+          type: boolean
+          examples:
+            - true
+        signing_secret:
+          description: The secret used to sign the webhook payload.
+          type: string
+          examples:
+            - "..."
+        created_at:
+          description: The Unix timestamp (in seconds) for when the webhook was created.
+          type: integer
+          examples:
+            - 1718312375
+        updated_at:
+          description: The Unix timestamp (in seconds) for when the webhook was updated.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - id
+        - url
+        - is_enabled
+        - created_at
+        - updated_at
+
+    ListWebhooksResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebhookObject"
+      required:
+        - object
+        - data
+
+    CreateWebhookRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        url:
+          type: string
+          description: The URL to send events to.
+          examples:
+            - https://my-app.com/webhook
+        events:
+          type: array
+          items:
+            type: string
+          description: The events to send to the webhook.
+          examples:
+            - ["sync.succeeded", "sync.failed"]
+      required:
+        - url
+        - events
+
+    UpdateWebhookRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        url:
+          type: string
+          description: The URL to send events to.
+          examples:
+            - https://my-app.com/webhook
+        events:
+          type: array
+          items:
+            type: string
+          description: The events to send to the webhook.
+          examples:
+            - ["sync.succeeded", "sync.failed"]
+
+    DeleteWebhookResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [webhook]
+        id:
+          type: string
+          examples:
+            - webhook-123
+        deleted:
+          type: boolean
+          examples:
+            - true
+      required:
+        - object
+        - id
+        - deleted
+
+    WebhookEventObject:
+      type: object
+      title: WebhookEvent
+      description: Represents an event sent to a webhook.
+      properties:
+        object:
+          description: The object type, which is always `webhook_event`.
+          type: string
+          enum: ["webhook_event"]
+        id:
+          description: The unique identifier for the webhook event.
+          type: string
+          examples:
+            - event-123
+        webhook_id:
+          description: The unique identifier of the webhook that received the event.
+          type: string
+          examples:
+            - webhook-123
+        event:
+          description: The event that occurred.
+          type: string
+          examples:
+            - sync.succeeded
+        payload:
+          description: The payload of the event.
+          type: object
+          additionalProperties: true
+          examples:
+            - {
+                "integration_id": "github-123",
+                "connection_id": "user-123",
+                "collection_key": "issues",
+                "results":
+                  {
+                    "records_added": 10,
+                    "records_updated": 5,
+                    "records_deleted": 2,
+                  },
+              }
+        delivered:
+          description: Whether the event was successfully delivered.
+          type: boolean
+          examples:
+            - true
+        timestamp:
+          description: The Unix timestamp (in seconds) for when the webhook event was created.
+          type: integer
+          examples:
+            - 1718312375
+      required:
+        - object
+        - id
+        - webhook_id
+        - event
+        - payload
+        - delivered
+        - timestamp
+
+    ListWebhookEventsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebhookEventObject"
+      required:
+        - object
+        - data
+
+    ProviderObject:
+      type: object
+      title: Provider
+      description: Represents an integration provider.
+      properties:
+        object:
+          description: The object type, which is always `provider`.
+          type: string
+          enum: ["provider"]
+        unique_key:
+          description: The unique key of the integration provider.
+          type: string
+          examples:
+            - github
+        schema:
+          "$ref": "#/components/schemas/ProviderSchema"
+      required:
+        - object
+        - unique_key
+        - schema
+
+    ListProvidersResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderObject"
+      required:
+        - object
+        - data
+
+    ProviderSchema:
+      type: object
+      properties:
+        unique_key:
+          type: string
+          description: The unique key of the integration provider.
+          examples:
+            - github
+        name:
+          type: string
+          description: The name of the integration provider.
+          examples:
+            - GitHub
+        base_url:
+          type: string
+          description: The base URL of the integration provider.
+          examples:
+            - https://api.github.com
+        docs_url:
+          type: string
+          description: The documentation URL of the integration provider.
+          examples:
+            - https://docs.github.com/en/rest
+        logo_url:
+          type: string
+          description: The URL of the logo of the integration provider.
+          examples:
+            - https://embed-integrations.s3.amazonaws.com/github.svg
+        logo_url_dark_mode:
+          type: string
+          description: The URL of the dark mode logo of the integration provider.
+          examples:
+            - https://embed-integrations.s3.amazonaws.com/github-dark.svg
+        auth:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: The authentication schemes supported by the integration provider.
+          examples:
+            - [
+                {
+                  "scheme": "oauth2",
+                  "authorization_url": "https://github.com/login/oauth/authorize",
+                  "token_url": "https://github.com/login/oauth/access_token",
+                },
+              ]
+        collections:
+          type: array
+          items:
+            "$ref": "#/components/schemas/CollectionSchema"
+            description: The collections supported by the integration provider.
+            examples:
+              - [
+                  {
+                    "name": "Issues",
+                    "description": "Issues are a great way to keep track of tasks, enhancements, and bugs in Github.",
+                    "properties":
+                      {
+                        "id":
+                          {
+                            "type": "string",
+                            "description": "The unique identifier of the issue.",
+                          },
+                        "title":
+                          {
+                            "type": "string",
+                            "description": "The title of the issue.",
+                          },
+                        "body":
+                          {
+                            "type": "string",
+                            "description": "The body of the issue.",
+                          },
+                        "url":
+                          {
+                            "type": "string",
+                            "description": "The URL of the issue.",
+                          },
+                        "number":
+                          {
+                            "type": "integer",
+                            "description": "Number uniquely identifying the issue within its repository.",
+                          },
+                        "state":
+                          {
+                            "type": "string",
+                            "description": "State of the issue; either 'open' or 'closed'",
+                          },
+                        "created_at":
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "The date the issue was created.",
+                          },
+                        "updated_at":
+                          {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "The date the issue was last updated.",
+                          },
+                      },
+                    "required":
+                      [
+                        "id",
+                        "title",
+                        "url",
+                        "number",
+                        "state",
+                        "created_at",
+                        "updated_at",
+                      ],
+                  },
+                ]
+        actions:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ActionSchema"
+            description: The actions supported by the integration provider.
+            examples:
+              - [
+                  {
+                    "name": "Create Issue",
+                    "description": "Create an issue in Github.",
+                    "parameters":
+                      {
+                        "type": "object",
+                        "properties":
+                          {
+                            "title":
+                              {
+                                "type": "string",
+                                "description": "The title of the issue.",
+                              },
+                            "body":
+                              {
+                                "type": "string",
+                                "description": "The body of the issue.",
+                              },
+                          },
+                        "required": ["title"],
+                      },
+                  },
+                ]
+      required:
+        - unique_key
+        - name
+        - base_url
+        - logo_url
+        - auth
+
+    Error:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [error]
+        code:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+      required:
+        - object
+        - code
+        - message
+        - type
