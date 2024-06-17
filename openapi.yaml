@@ -339,13 +339,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - "$ref": "#/components/schemas/IntegrationObject"
-                  - type: object
-                    properties:
-                      is_enabled:
-                        type: boolean
-                        example: false
+                $ref: "#/components/schemas/IntegrationObject"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
@@ -1250,13 +1244,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - "$ref": "#/components/schemas/CollectionObject"
-                  - type: object
-                    properties:
-                      is_enabled:
-                        type: boolean
-                        example: false
+                $ref: "#/components/schemas/CollectionObject"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
@@ -2390,13 +2378,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - "$ref": "#/components/schemas/ActionObject"
-                  - type: object
-                    properties:
-                      is_enabled:
-                        type: boolean
-                        example: false
+                $ref: "#/components/schemas/ActionObject"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
@@ -2587,6 +2569,7 @@ paths:
             maximum: 10
       responses:
         "200":
+          description: OK
           content:
             application/json:
               schema:
@@ -2687,6 +2670,7 @@ paths:
               additionalProperties: true
       responses:
         "200":
+          description: OK
           content:
             application/json:
               schema:
@@ -2807,6 +2791,7 @@ paths:
               additionalProperties: true
       responses:
         "200":
+          description: OK
           content:
             application/json:
               schema:
@@ -2935,6 +2920,7 @@ paths:
               additionalProperties: true
       responses:
         "200":
+          description: OK
           content:
             application/json:
               schema:
@@ -3338,13 +3324,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - "$ref": "#/components/schemas/WebhookObject"
-                  - type: object
-                    properties:
-                      is_enabled:
-                        type: boolean
-                        example: false
+                $ref: "#/components/schemas/WebhookObject"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
