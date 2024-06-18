@@ -572,15 +572,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - "$ref": "#/components/schemas/ConnectionObject"
-                  - type: object
-                    properties:
-                      metadata:
-                        type: object
-                        additionalProperties: true
-                        examples:
-                          - { "foo": "bar" }
+                $ref: "#/components/schemas/ConnectionObject"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
