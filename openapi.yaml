@@ -4726,7 +4726,7 @@ components:
           description: The duration of the sync run (in seconds).
           type: [integer, "null"]
           examples:
-            - 20
+            - 20.523
       required:
         - object
         - id
@@ -4957,13 +4957,13 @@ components:
                 "url": "https://api.github.com/repos/octocat/Hello-World/issues/123",
               }
         timestamp:
-          description: The Unix timestamp (in seconds) for when the action run started.
+          description: The Unix timestamp (in seconds) for when the action ran.
           type: integer
           examples:
             - 1718312375
         duration:
           description: The duration of the action run (in seconds).
-          type: [integer, "null"]
+          type: integer
           examples:
             - 1.234
       required:
