@@ -1986,7 +1986,7 @@ paths:
           source: |
             curl https://api.useembed.com/v1/syncs/issues/runs?integration_id=github-123&connection_id=user-123 \
               -H "Authorization: Bearer $EMBED_API_KEY"
-  /syncs/{collection_key}/runs/{run_id}:
+  /syncs/{collection_key}/runs/{sync_run_id}:
     get:
       operationId: getSyncRun
       tags:
@@ -2018,14 +2018,14 @@ paths:
             type: string
             examples:
               - issues
-        - name: run_id
+        - name: sync_run_id
           in: path
           description: The ID of the sync run.
           required: true
           schema:
             type: string
             examples:
-              - run-123
+              - sync-run-123
       responses:
         "200":
           description: OK
@@ -2041,7 +2041,7 @@ paths:
 
             const embed = new Embed();
 
-            const syncRun = await embed.syncs.runs.retrieve("issues", "run-123", {
+            const syncRun = await embed.syncs.runs.retrieve("issues", "sync-run-123", {
               integration_id: "github-123",
               connection_id: "user-123",
             });
@@ -2056,7 +2056,7 @@ paths:
 
             sync_run = client.syncs.runs.retrieve(
               "issues",
-              "run-123",
+              "sync-run-123",
               integration_id="github-123",
               connection_id="user-123"
             )
@@ -2065,7 +2065,7 @@ paths:
         - lang: "cURL"
           label: "cURL"
           source: |
-            curl https://api.useembed.com/v1/syncs/issues/runs/run-123?integration_id=github-123&connection_id=user-123 \
+            curl https://api.useembed.com/v1/syncs/issues/runs/sync-run-123?integration_id=github-123&connection_id=user-123 \
               -H "Authorization: Bearer $EMBED_API_KEY"
   /actions:
     get:
@@ -2517,6 +2517,159 @@ paths:
           label: "cURL"
           source: |
             curl https://api.useembed.com/v1/actions/create-issue/schema?integration_id=github-123 \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /actions/{action_key}/runs:
+    get:
+      operationId: listActionRuns
+      tags:
+        - Actions
+      summary: List action runs
+      description: Returns a list of recent action runs.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action runs belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the action runs belong.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: action_key
+          in: path
+          description: The unique key of the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - create-issue
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListActionRunsResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const actionRuns = await embed.actions.runs.list("create-issue", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(actionRuns);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action_runs = client.actions.runs.list(
+              "create-issue",
+              integration_id="github-123"
+              connection_id="user-123"
+            )
+
+            print(action_runs)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/create-issue/runs?integration_id=github-123&connection_id="user-123" \
+              -H "Authorization: Bearer $EMBED_API_KEY"
+  /actions/{action_key}/runs/{action_run_id}:
+    get:
+      operationId: getActionRun
+      tags:
+        - Actions
+      summary: Retrieve action run
+      description: Returns an action run.
+      parameters:
+        - name: integration_id
+          in: query
+          description: The ID of the integration to which the action run belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - github-123
+        - name: connection_id
+          in: query
+          description: The ID of the connection to which the action run belongs.
+          required: true
+          schema:
+            type: string
+            examples:
+              - user-123
+        - name: action_key
+          in: path
+          description: The unique key of the action.
+          required: true
+          schema:
+            type: string
+            examples:
+              - create-issue
+        - name: action_run_id
+          in: path
+          description: The ID of the action run.
+          required: true
+          schema:
+            type: string
+            examples:
+              - action-run-123
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionRunObject"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const actionRun = await embed.actions.runs.retrieve("create-issue", "action-run-123", {
+              integration_id: "github-123",
+              connection_id: "user-123",
+            });
+
+            console.log(actionRun);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            action_run = client.actions.runs.retrieve(
+              "create-issue",
+              "action-run-123",
+              integration_id="github-123",
+              connection_id="user-123"
+            )
+
+            print(action_run)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/actions/create-issue/runs/action-run-123?integration_id=github-123&connection_id=user-123 \
               -H "Authorization: Bearer $EMBED_API_KEY"
   /proxy/{endpoint}:
     get:
@@ -4527,7 +4680,7 @@ components:
           description: The unique identifier of the sync run.
           type: string
           examples:
-            - run-123
+            - sync-run-123
         collection_key:
           description: The unique key of the collection being synced.
           type: string
@@ -4546,7 +4699,7 @@ components:
         status:
           description: The status of the sync run.
           type: string
-          enum: [running, stopped, completed, failed]
+          enum: [running, stopped, succeeded, failed]
           examples:
             - running
         records_added:
@@ -4564,16 +4717,16 @@ components:
           type: [integer, "null"]
           examples:
             - 2
-        created_at:
-          description: The Unix timestamp (in seconds) for when the sync run was created.
+        timestamp:
+          description: The Unix timestamp (in seconds) for when the sync run started.
           type: integer
           examples:
             - 1718312375
-        updated_at:
-          description: The Unix timestamp (in seconds) for when the sync run was updated.
-          type: integer
+        duration:
+          description: The duration of the sync run (in seconds).
+          type: [integer, "null"]
           examples:
-            - 1718312375
+            - 20
       required:
         - object
         - id
@@ -4744,6 +4897,97 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ActionSchema"
+      required:
+        - object
+        - data
+
+    ActionRunObject:
+      type: object
+      title: ActionRun
+      description: Represents an execution of an action.
+      properties:
+        object:
+          description: The object type, which is always `action_run`.
+          type: string
+          enum: ["action_run"]
+        id:
+          description: The unique identifier of the action run.
+          type: string
+          examples:
+            - action-run-123
+        action_key:
+          description: The unique key of the action being run.
+          type: string
+          examples:
+            - create-issue
+        integration_id:
+          description: The unique identifier of the integration to which the action belongs.
+          type: string
+          examples:
+            - github-123
+        connection_id:
+          description: The unique identifier of the connection to which the action belongs.
+          type: string
+          examples:
+            - user-123
+        status:
+          description: The status of the action run.
+          type: string
+          enum: [running, succeeded, failed]
+          examples:
+            - succeeded
+        input:
+          description: The input parameters for the action run.
+          type: object
+          additionalProperties: true
+          examples:
+            - {
+                "title": "Support dark mode",
+                "body": "It's too difficult to use the application at night.",
+              }
+        output:
+          description: The output of the action run.
+          type: object
+          additionalProperties: true
+          examples:
+            - {
+                "id": "123",
+                "title": "Support dark mode",
+                "body": "It's too difficult to use the application at night.",
+                "url": "https://api.github.com/repos/octocat/Hello-World/issues/123",
+              }
+        timestamp:
+          description: The Unix timestamp (in seconds) for when the action run started.
+          type: integer
+          examples:
+            - 1718312375
+        duration:
+          description: The duration of the action run (in seconds).
+          type: [integer, "null"]
+          examples:
+            - 1.234
+      required:
+        - object
+        - id
+        - action_key
+        - integration_id
+        - connection_id
+        - status
+        - input
+        - output
+        - timestamp
+        - duration
+
+    ListActionRunsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum: [list]
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionRunObject"
       required:
         - object
         - data
