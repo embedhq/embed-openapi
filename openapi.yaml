@@ -3691,12 +3691,14 @@ components:
           type: string
           examples:
             - github
-        auth_scheme:
-          description: The authentication scheme the integration uses.
-          type: string
-          enum: [oauth2, oauth1, basic, api_key]
+        auth_schemes:
+          description: The authentication schemes the integration supports.
+          type: array
+          items:
+            type: string
+            enum: [oauth1, oauth2, basic, api_key]
           examples:
-            - oauth2
+            - ["oauth2"]
         is_enabled:
           description: Whether the integration is enabled.
           type: boolean
