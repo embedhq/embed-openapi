@@ -3987,7 +3987,6 @@ components:
           examples:
             - null
       required:
-        - id
         - integration_id
         - auth_scheme
         - credentials
@@ -4003,11 +4002,10 @@ components:
           description: The OAuth 2.0 refresh token.
         expires_at:
           type: integer
-          description: The timestamp when the access token expires.
+          description: The unix timestamp (in seconds) for when the access token expires.
       required:
         - access_token
         - refresh_token
-        - expires_at
 
     OAuth1Credentials:
       type: object
@@ -4015,12 +4013,12 @@ components:
         oauth_token:
           type: string
           description: The OAuth 1.0a token.
-        token_secret:
+        oauth_token_secret:
           type: string
           description: The OAuth 1.0a token.
       required:
         - oauth_token
-        - token_secret
+        - oauth_token_secret
 
     BasicCredentials:
       type: object
@@ -4182,11 +4180,6 @@ components:
           type: integer
           examples:
             - 1718312375
-        updated_at:
-          description: The Unix timestamp (in seconds) for when the session token was updated.
-          type: integer
-          examples:
-            - 1718312375
       required:
         - object
         - token
@@ -4201,7 +4194,6 @@ components:
         - exclusions
         - metadata
         - created_at
-        - updated_at
 
     CreateSessionTokenRequest:
       type: object
@@ -4214,7 +4206,7 @@ components:
             - github-123
         connection_id:
           type: string
-          description: The unique identifier to assign to the connection.
+          description: The unique identifier of the connection.
           examples:
             - user-123
         expires_in_mins:
@@ -4341,6 +4333,12 @@ components:
             type: string
           examples:
             - []
+        configuration:
+          description: Configuration options for the collection.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
         created_at:
           description: The Unix timestamp (in seconds) for when the collection was created.
           type: integer
@@ -5231,11 +5229,6 @@ components:
     ProviderSchema:
       type: object
       properties:
-        unique_key:
-          type: string
-          description: The unique key of the integration provider.
-          examples:
-            - github
         name:
           type: string
           description: The name of the integration provider.
@@ -5373,7 +5366,6 @@ components:
                   },
                 ]
       required:
-        - unique_key
         - name
         - base_url
         - logo_url
