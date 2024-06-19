@@ -3774,12 +3774,14 @@ components:
           description: The unique key of the integration provider.
           examples:
             - github
-        auth_scheme:
-          type: string
-          enum: [oauth1, oauth2, basic, api_key]
-          description: The authentication scheme the integration should use. Only applicable for providers that support multiple auth schemes.
+        auth_schemes:
+          type: array
+          items:
+            type: string
+            enum: [oauth1, oauth2, basic, api_key]
+          description: The authentication schemes the integration supports.
           examples:
-            - oauth2
+            - ["oauth2"]
         use_test_credentials:
           type: boolean
           description: Use test credentials provided by Embed. Only available in staging environment.
