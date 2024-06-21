@@ -4726,7 +4726,7 @@ components:
             - 1718312375
         duration:
           description: The duration of the sync run (in seconds).
-          type: [integer, "null"]
+          type: [number, "null"]
           examples:
             - 20.523
       required:
@@ -4965,7 +4965,7 @@ components:
             - 1718312375
         duration:
           description: The duration of the action run (in seconds).
-          type: integer
+          type: number
           examples:
             - 1.234
       required:
