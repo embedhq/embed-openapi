@@ -5272,99 +5272,99 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/CollectionSchema"
-            description: The collections supported by the integration provider.
-            examples:
-              - [
-                  {
-                    "name": "Issues",
-                    "description": "Issues are a great way to keep track of tasks, enhancements, and bugs in Github.",
-                    "properties":
-                      {
-                        "id":
-                          {
-                            "type": "string",
-                            "description": "The unique identifier of the issue.",
-                          },
-                        "title":
-                          {
-                            "type": "string",
-                            "description": "The title of the issue.",
-                          },
-                        "body":
-                          {
-                            "type": "string",
-                            "description": "The body of the issue.",
-                          },
-                        "url":
-                          {
-                            "type": "string",
-                            "description": "The URL of the issue.",
-                          },
-                        "number":
-                          {
-                            "type": "integer",
-                            "description": "Number uniquely identifying the issue within its repository.",
-                          },
-                        "state":
-                          {
-                            "type": "string",
-                            "description": "State of the issue; either 'open' or 'closed'",
-                          },
-                        "created_at":
-                          {
-                            "type": "string",
-                            "format": "date-time",
-                            "description": "The date the issue was created.",
-                          },
-                        "updated_at":
-                          {
-                            "type": "string",
-                            "format": "date-time",
-                            "description": "The date the issue was last updated.",
-                          },
-                      },
-                    "required":
-                      [
-                        "id",
-                        "title",
-                        "url",
-                        "number",
-                        "state",
-                        "created_at",
-                        "updated_at",
-                      ],
-                  },
-                ]
+          description: The collections supported by the integration provider.
+          examples:
+            - [
+                {
+                  "name": "Issues",
+                  "description": "Issues are a great way to keep track of tasks, enhancements, and bugs in Github.",
+                  "properties":
+                    {
+                      "id":
+                        {
+                          "type": "string",
+                          "description": "The unique identifier of the issue.",
+                        },
+                      "title":
+                        {
+                          "type": "string",
+                          "description": "The title of the issue.",
+                        },
+                      "body":
+                        {
+                          "type": "string",
+                          "description": "The body of the issue.",
+                        },
+                      "url":
+                        {
+                          "type": "string",
+                          "description": "The URL of the issue.",
+                        },
+                      "number":
+                        {
+                          "type": "integer",
+                          "description": "Number uniquely identifying the issue within its repository.",
+                        },
+                      "state":
+                        {
+                          "type": "string",
+                          "description": "State of the issue; either 'open' or 'closed'",
+                        },
+                      "created_at":
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "The date the issue was created.",
+                        },
+                      "updated_at":
+                        {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "The date the issue was last updated.",
+                        },
+                    },
+                  "required":
+                    [
+                      "id",
+                      "title",
+                      "url",
+                      "number",
+                      "state",
+                      "created_at",
+                      "updated_at",
+                    ],
+                },
+              ]
         actions:
           type: array
           items:
             "$ref": "#/components/schemas/ActionSchema"
-            description: The actions supported by the integration provider.
-            examples:
-              - [
-                  {
-                    "name": "Create Issue",
-                    "description": "Create an issue in Github.",
-                    "parameters":
-                      {
-                        "type": "object",
-                        "properties":
-                          {
-                            "title":
-                              {
-                                "type": "string",
-                                "description": "The title of the issue.",
-                              },
-                            "body":
-                              {
-                                "type": "string",
-                                "description": "The body of the issue.",
-                              },
-                          },
-                        "required": ["title"],
-                      },
-                  },
-                ]
+          description: The actions supported by the integration provider.
+          examples:
+            - [
+                {
+                  "name": "Create Issue",
+                  "description": "Create an issue in Github.",
+                  "parameters":
+                    {
+                      "type": "object",
+                      "properties":
+                        {
+                          "title":
+                            {
+                              "type": "string",
+                              "description": "The title of the issue.",
+                            },
+                          "body":
+                            {
+                              "type": "string",
+                              "description": "The body of the issue.",
+                            },
+                        },
+                      "required": ["title"],
+                    },
+                },
+              ]
       required:
         - name
         - base_url
