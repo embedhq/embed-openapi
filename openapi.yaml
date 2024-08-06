@@ -361,7 +361,7 @@ paths:
             const connectedAccount = await embed.connectedAccounts.upsert({
               id: "user-123",
               integration: "github-123",
-              auth_method: "oauth",
+              auth_method: "oauth2",
               credentials: {
                 "access_token": "...",
                 "refresh_token": "...",
@@ -380,7 +380,7 @@ paths:
             connected_account = client.connected_accounts.upsert(
               id="user-123",
               integration="github-123",
-              auth_method="oauth",
+              auth_method="oauth2",
               credentials={
                 "access_token": "...",
                 "refresh_token": "...",
@@ -397,8 +397,8 @@ paths:
               -H "Content-Type: application/json" \
               -d '{
                 "id": "user-123",
-                "integration_id": "github-123",
-                "auth_scheme": "oauth",
+                "integration": "github-123",
+                "auth_method": "oauth2",
                 "credentials": {
                   "access_token": "...",
                   "refresh_token": "...",
@@ -3788,8 +3788,8 @@ components:
           type: string
           examples:
             - github
-        auth_schemes:
-          description: The authentication schemes the integration supports.
+        auth_methods:
+          description: The authentication methods the integration supports.
           type: array
           items:
             type: string
@@ -3845,9 +3845,7 @@ components:
             - 1718312375
       required:
         - object
-        - id
         - provider
-        - auth_scheme
         - is_enabled
         - logo_url
         - is_using_test_credentials
@@ -4658,6 +4656,54 @@ components:
         - created_at
         - updated_at
 
+    CreateSyncRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        integration:
+          type: string
+          description: The unique slug of the integration.
+          examples:
+            - github-123
+        connected_account_id:
+          type: string
+          description: The unique identifier of the connected account.
+          examples:
+            - user-123
+        collection:
+          type: string
+          description: The unique slug of the collection.
+          examples:
+            - issues
+        collection_version:
+          type: string
+          description: The collection version used for the sync (defaults to latest).
+          examples:
+            - "1.2"
+        frequency:
+          type: string
+          description: The frequency of the sync.
+          examples:
+            - Every 6 hours
+        inclusions:
+          type: array
+          items:
+            type: string
+          description: Array of IDs to include in the sync. If present, only objects with matching IDs will be synced.
+          examples:
+            - []
+        exclusions:
+          type: array
+          items:
+            type: string
+          description: Array of IDs to exclude from the sync. If present, objects with matching IDs will not be synced.
+          examples:
+            - []
+      required:
+        - integration
+        - connected_account_id
+        - collection
+
     ListSyncsResponse:
       type: object
       properties:
@@ -4875,6 +4921,75 @@ components:
         - configuration
         - created_at
         - updated_at
+
+    CreateActionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        integration:
+          type: string
+          description: The slug of the integration to which the action belongs.
+          examples:
+            - github-123
+        action_template:
+          type: string
+          description: The slug of the action template to use.
+          examples:
+            - create-issue
+        slug:
+          type: string
+          description: The unique slug of the action (defaults to the action template slug).
+          examples:
+            - create-issue
+        name:
+          type: string
+          description: The display name of the action (defaults to the action template name).
+          examples:
+            - Create Issue
+        required_scopes:
+          type: array
+          items:
+            type: string
+          description: The OAuth scopes required to trigger the action (defaults to the action template scopes, if applicable).
+          examples:
+            - ["repo"]
+        configuration:
+          type: [object, "null"]
+          description: Configuration options for the action.
+          additionalProperties: true
+          examples:
+            - null
+      required:
+        - integration
+        - action_template
+
+    UpdateActionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: The display name of the action.
+          examples:
+            - Create Issue
+        is_enabled:
+          type: boolean
+          description: Whether the action is enabled.
+          examples:
+            - true
+        required_scopes:
+          type: array
+          items:
+            type: string
+          description: The OAuth scopes required to trigger the action.
+          examples:
+            - ["repo"]
+        configuration:
+          type: [object, "null"]
+          description: Configuration options for the action.
+          additionalProperties: true
+          examples:
+            - null
 
     ListActionsResponse:
       type: object
