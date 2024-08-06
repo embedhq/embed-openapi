@@ -2878,25 +2878,25 @@ paths:
           schema:
             type: string
             description: The endpoint to proxy the request to.
-        - name: X-Embed-Integration
+        - name: integration
           in: header
           required: true
           schema:
             type: string
             description: The slug of the integration to use for the request.
-        - name: X-Embed-Connected-Account-Id
+        - name: connected_account_id
           in: header
           required: true
           schema:
             type: string
             description: The ID of the connected account to use for the request.
-        - name: X-Embed-Base-Url-Override
+        - name: base_url_override
           in: header
           required: false
           schema:
             type: string
             description: Override the base URL for the request.
-        - name: X-Embed-Retries
+        - name: retries
           in: header
           required: false
           schema:
@@ -2958,8 +2958,8 @@ paths:
           source: |
             curl -G https://api.useembed.com/v1/proxy/repos/octocat/hello-world/languages \
               -H "Authorization: Bearer $EMBED_API_KEY" \
-              -H "X-Embed-Integration: github-123" \
-              -H "X-Embed-Connected-Account-Id: user-123"
+              -H "integration: github-123" \
+              -H "connected_account_id: user-123"
     post:
       operationId: proxyPost
       tags:
@@ -2973,25 +2973,25 @@ paths:
           schema:
             type: string
             description: The endpoint to proxy the request to.
-        - name: X-Embed-Integration
+        - name: integration
           in: header
           required: true
           schema:
             type: string
             description: The slug of the integration to use for the request.
-        - name: X-Embed-Connected-Account-Id
+        - name: connected_account_id
           in: header
           required: true
           schema:
             type: string
             description: The ID of the connected account to use for the request.
-        - name: X-Embed-Base-Url-Override
+        - name: base_url_override
           in: header
           required: false
           schema:
             type: string
             description: Override the base URL for the request.
-        - name: X-Embed-Retries
+        - name: retries
           in: header
           required: false
           schema:
@@ -3075,8 +3075,8 @@ paths:
           source: |
             curl https://api.useembed.com/v1/proxy/repos/octocat/hello-world/forks \
               -H "Authorization: Bearer $EMBED_API_KEY" \
-              -H "X-Embed-Integration: github-123" \
-              -H "X-Embed-Connected-Account-Id: user-123" \
+              -H "integration: github-123" \
+              -H "connected_account_id: user-123" \
               -H "Content-Type: application/json" \
               -d '{
                 "name": "Hello-World-2",
@@ -3095,25 +3095,25 @@ paths:
           schema:
             type: string
             description: The endpoint to proxy the request to.
-        - name: X-Embed-Integration
+        - name: integration
           in: header
           required: true
           schema:
             type: string
             description: The slug of the integration to use for the request.
-        - name: X-Embed-Connected-Account-Id
+        - name: connected_account_id
           in: header
           required: true
           schema:
             type: string
             description: The ID of the connected account to use for the request.
-        - name: X-Embed-Base-Url-Override
+        - name: base_url_override
           in: header
           required: false
           schema:
             type: string
             description: Override the base URL for the request.
-        - name: X-Embed-Retries
+        - name: retries
           in: header
           required: false
           schema:
@@ -3205,8 +3205,8 @@ paths:
           source: |
             curl https://api.useembed.com/v1/proxy/repos/octocat/hello-world/contents/readme.md \
               -H "Authorization: Bearer $EMBED_API_KEY" \
-              -H "X-Embed-Integration: github-123" \
-              -H "X-Embed-Connected-Account-Id: user-123" \
+              -H "integration: github-123" \
+              -H "connected_account_id: user-123" \
               -H "Content-Type: application/json" \
               -d '{
                 "message": "Updated README.md",
@@ -3225,25 +3225,25 @@ paths:
           schema:
             type: string
             description: The endpoint to proxy the request to.
-        - name: X-Embed-Integration
+        - name: integration
           in: header
           required: true
           schema:
             type: string
             description: The slug of the integration to use for the request.
-        - name: X-Embed-Connected-Account-Id
+        - name: connected_account_id
           in: header
           required: true
           schema:
             type: string
             description: The ID of the connected account to use for the request.
-        - name: X-Embed-Base-Url-Override
+        - name: base_url_override
           in: header
           required: false
           schema:
             type: string
             description: Override the base URL for the request.
-        - name: X-Embed-Retries
+        - name: retries
           in: header
           required: false
           schema:
@@ -3329,8 +3329,8 @@ paths:
           source: |
             curl https://api.useembed.com/v1/proxy/repos/octocat/hello-world/contents/hello.txt \
               -H "Authorization: Bearer $EMBED_API_KEY" \
-              -H "X-Embed-Integration: github-123" \
-              -H "X-Embed-Connected-Account-Id: user-123" \
+              -H "integration: github-123" \
+              -H "connected_account_id: user-123" \
               -H "Content-Type: application/json" \
               -X DELETE \
               -d '{
