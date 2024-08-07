@@ -3082,6 +3082,13 @@ paths:
           schema:
             type: string
             description: Override the base URL for the request.
+        - name: response_type
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: [arraybuffer, json, text, stream]
+            description: Override the base URL for the request.
         - name: retries
           in: header
           required: false
@@ -3176,6 +3183,13 @@ paths:
           required: false
           schema:
             type: string
+            description: Override the base URL for the request.
+        - name: response_type
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: [arraybuffer, json, text, stream]
             description: Override the base URL for the request.
         - name: retries
           in: header
@@ -3298,6 +3312,13 @@ paths:
           required: false
           schema:
             type: string
+            description: Override the base URL for the request.
+        - name: response_type
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: [arraybuffer, json, text, stream]
             description: Override the base URL for the request.
         - name: retries
           in: header
@@ -3428,6 +3449,13 @@ paths:
           required: false
           schema:
             type: string
+            description: Override the base URL for the request.
+        - name: response_type
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: [arraybuffer, json, text, stream]
             description: Override the base URL for the request.
         - name: retries
           in: header
