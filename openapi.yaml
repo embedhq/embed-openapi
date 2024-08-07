@@ -3958,7 +3958,7 @@ components:
     IntegrationObject:
       type: object
       title: Integration
-      description: Represents an integration with a third-party provider.
+      description: Represents an integration with a provider.
       properties:
         object:
           description: The object type, which is always `integration`.
@@ -3974,12 +3974,10 @@ components:
           type: string
           examples:
             - github
-        auth_methods:
-          description: The authentication methods the integration supports.
-          type: array
-          items:
-            type: string
-            enum: [oauth1, oauth2, basic, api_key]
+        auth_method:
+          description: The authentication method the integration uses.
+          type: string
+          enum: [oauth2, basic, api_key, none]
           examples:
             - ["oauth2"]
         is_enabled:
@@ -4031,7 +4029,9 @@ components:
             - 1718312375
       required:
         - object
+        - slug
         - provider
+        - auth_method
         - is_enabled
         - logo_url
         - is_using_test_credentials
@@ -4109,6 +4109,11 @@ components:
       type: object
       additionalProperties: false
       properties:
+        name:
+          type: string
+          description: The display name of the integration (defaults to provider name).
+          examples:
+            - GitHub
         is_using_test_credentials:
           type: boolean
           description: Whether the integration is using test credentials provided by Embed.
@@ -4227,9 +4232,13 @@ components:
           description: The connected account's authentication credentials.
           oneOf:
             - $ref: "#/components/schemas/OAuth2Credentials"
-            - $ref: "#/components/schemas/OAuth1Credentials"
             - $ref: "#/components/schemas/BasicCredentials"
             - $ref: "#/components/schemas/ApiKeyCredentials"
+        name:
+          description: The display name of the connected account.
+          type: string
+          examples:
+            - Octocat
         configuration:
           type: [object, "null"]
           description: Configuration options for the connected account.
@@ -4263,19 +4272,6 @@ components:
       required:
         - access_token
         - refresh_token
-
-    OAuth1Credentials:
-      type: object
-      properties:
-        oauth_token:
-          type: string
-          description: The OAuth 1.0a token.
-        oauth_token_secret:
-          type: string
-          description: The OAuth 1.0a token.
-      required:
-        - oauth_token
-        - oauth_token_secret
 
     BasicCredentials:
       type: object
@@ -4380,8 +4376,8 @@ components:
           type: string
           examples:
             - st_1a2b3c
-        url:
-          description: The magic link used to connect an account.
+        connect_url:
+          description: The URL used to connect an account.
           type: string
           examples:
             - https://api.useembed.com/connect/st_1a2b3c
@@ -4405,6 +4401,11 @@ components:
           type: [string, "null"]
           examples:
             - https://my-app.com/callback
+        language:
+          description: The language to use for the authorization flow.
+          type: [string, "null"]
+          examples:
+            - en
         name:
           description: The display name to assign to the connected account.
           type: [string, "null"]
@@ -4430,11 +4431,12 @@ components:
       required:
         - object
         - token
-        - url
-        - connected_account_id
+        - connect_url
         - integration
+        - connected_account_id
         - expires_at
         - redirect_url
+        - language
         - name
         - configuration
         - metadata
@@ -4465,6 +4467,11 @@ components:
           description: The URL to redirect to after the authorization flow is complete.
           examples:
             - https://my-app.com/callback
+        language:
+          description: The language to use for the authorization flow.
+          type: [string, "null"]
+          examples:
+            - en
         name:
           type: [string, "null"]
           description: The display name to assign to the connected account.
@@ -4506,7 +4513,7 @@ components:
         object:
           type: string
           enum: [session_token]
-        id:
+        token:
           type: string
           examples:
             - st_1a2b3c
@@ -5071,17 +5078,12 @@ components:
         object:
           type: string
           enum: [sync]
-        collection:
-          type: string
-          examples:
-            - issues
         deleted:
           type: boolean
           examples:
             - true
       required:
         - object
-        - collection
         - deleted
 
     SyncRunObject:
@@ -5206,6 +5208,12 @@ components:
           type: string
           examples:
             - "1.2"
+        schema:
+          description: The action schema.
+          type: object
+          additionalProperties: true
+          examples:
+            - {}
         is_enabled:
           description: Whether the action is enabled.
           type: boolean
@@ -5240,6 +5248,7 @@ components:
         - integration
         - name
         - version
+        - schema
         - is_enabled
         - configuration
         - created_at
@@ -5341,6 +5350,12 @@ components:
                 "title": "Support dark mode",
                 "body": "It's too difficult to use the application at night.",
               }
+        async:
+          type: boolean
+          description: Whether to trigger the action asynchronously.
+          examples:
+            - false
+          default: false
       required:
         - input
 
@@ -5505,6 +5520,7 @@ components:
         - id
         - url
         - is_enabled
+        - signing_secret
         - created_at
         - updated_at
 
@@ -5558,6 +5574,11 @@ components:
           description: The events to send to the webhook.
           examples:
             - ["sync_run.succeeded", "sync_run.failed"]
+        is_enabled:
+          type: boolean
+          description: Whether the webhook is enabled.
+          examples:
+            - true
 
     DeleteWebhookResponse:
       type: object
@@ -5706,18 +5727,23 @@ components:
                 "authorization_url": "https://github.com/login/oauth/authorize",
                 "token_url": "https://github.com/login/oauth/access_token",
               }
-        headers:
-          description: Headers to attach to requests made to the provider.
-          type: [object, "null"]
-          additionalProperties: true
-          examples:
-            - null
         rate_limit_configuration:
           description: The configuration details required to handle rate limits imposed by the provider.
           type: [object, "null"]
           additionalProperties: true
           examples:
             - { "retry_at": "X-RateLimit-Reset" }
+        headers:
+          description: Headers to attach to requests made to the provider.
+          type: [object, "null"]
+          additionalProperties: true
+          examples:
+            - null
+        has_test_credentials:
+          description: Whether the provider has OAuth credentials to test with.
+          type: boolean
+          examples:
+            - false
         visibility:
           description: Whether the provider is public or private.
           type: string
@@ -5734,8 +5760,9 @@ components:
         - logo_url_dark_mode
         - auth_methods
         - oauth_configuration
-        - headers
         - rate_limit_configuration
+        - headers
+        - has_test_credentials
         - visibility
 
     ListProvidersResponse:
