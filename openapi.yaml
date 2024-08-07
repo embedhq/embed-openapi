@@ -2294,7 +2294,7 @@ paths:
 
             const embed = new Embed();
 
-            const query = await embed.query({
+            const query = await embed.query.exec({
               integration: "github-123",
               collection: "issues",
               connected_account_id: "user-123",
@@ -2310,7 +2310,7 @@ paths:
 
             client = Embed()
 
-            query = client.query(
+            query = client.query.exec(
               integration="github-123",
               collection="issues",
               connected_account_id="user-123",
@@ -2360,7 +2360,7 @@ paths:
 
             const embed = new Embed();
 
-            const results = await embed.multiQuery({
+            const results = await embed.query.multi({
               queries: [
                 {
                   integration: "github-123",
@@ -2387,7 +2387,7 @@ paths:
 
             client = Embed()
 
-            results = client.multi_query(
+            results = client.query.multi(
               queries=[
                 {
                   "integration": "github",
