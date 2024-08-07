@@ -4396,7 +4396,7 @@ components:
           examples:
             - user-123
         expires_at:
-          description: The Unix timestamp (in seconds) for when the connect session expires.
+          description: The Unix timestamp (in seconds) for when the session token expires.
           type: integer
           examples:
             - 1718312375
@@ -4456,7 +4456,7 @@ components:
             - github-123
         expires_in_mins:
           type: integer
-          description: The number of minutes until the connect session expires.
+          description: The number of minutes until the session token expires.
           default: 60
           examples:
             - 60
