@@ -15,19 +15,22 @@ tags:
     description: Integrate with third-party apps.
   - name: Connected Accounts
     description: Connect end-user accounts to integrations.
+  - name: Session Tokens
+    description: Short-lived tokens used to connect accounts securely.
   - name: Providers
     description: View integration providers.
   - name: Collections
     description: Store data from apps in collections.
   - name: Syncs
     description: Sync data from apps.
+  - name: Queries
+    description: Vector and hybrid search across app data.
   - name: Actions
     description: Take actions in apps.
   - name: Proxy
     description: Proxy requests to third-party APIs.
   - name: Webhooks
     description: View and manage webhooks.
-
 paths:
   /integrations:
     post:
@@ -99,6 +102,12 @@ paths:
       summary: List integrations
       description: Returns a list of integrations.
       parameters:
+        - name: connected_account_id
+          in: query
+          description: Filter for integrations associated with a connected account.
+          required: false
+          schema:
+            type: string
         - "$ref": "#/components/parameters/limit"
         - "$ref": "#/components/parameters/order"
         - "$ref": "#/components/parameters/after"
@@ -577,26 +586,26 @@ paths:
             curl https://api.useembed.com/v1/connected-accounts/user-123?integration=github-123 \
               -X DELETE \
               -H "Authorization: Bearer $EMBED_API_KEY"
-  /connect-sessions:
+  /session-tokens:
     post:
-      operationId: createConnectSession
+      operationId: createSessionToken
       tags:
-        - Connected Accounts
-      summary: Create connect session
-      description: Creates a connect session.
+        - Session Tokens
+      summary: Create session token
+      description: Creates a session token.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateConnectSessionRequest"
+              $ref: "#/components/schemas/CreateSessionTokenRequest"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ConnectSessionObject"
+                $ref: "#/components/schemas/SessionTokenObject"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
@@ -605,13 +614,13 @@ paths:
 
             const embed = new Embed();
 
-            const connectSession = await embed.connectSessions.create({
+            const sessionToken = await embed.sessionTokens.create({
               integration: "github-123",
               connected_account_id: "user-123",
               expires_in_mins: 60,
             });
 
-            console.log(connectSession);
+            console.log(sessionToken);
         - lang: "python"
           label: "Python"
           source: |
@@ -619,17 +628,17 @@ paths:
 
             client = Embed()
 
-            connect_session = client.connect_sessions.create(
+            session_token = client.session_tokens.create(
               integration="github-123",
               connected_account_id="user-123",
               expires_in_mins=60
             )
 
-            print(connect_session)
+            print(session_token)
         - lang: "cURL"
           label: "cURL"
           source: |
-            curl https://api.useembed.com/v1/connect-sessions \
+            curl https://api.useembed.com/v1/session-tokens \
               -H "Authorization: Bearer $EMBED_API_KEY" \
               -H "Content-Type: application/json" \
               -d '{
@@ -638,18 +647,31 @@ paths:
                 "expires_in_mins": 60,
               }'
     get:
-      operationId: listConnectSessions
+      operationId: listSessionTokens
       tags:
-        - Connected Accounts
-      summary: List connect sessions
-      description: Returns a list of connect sessions.
+        - Session Tokens
+      summary: List session tokens
+      description: Returns a list of session tokens.
+      parameters:
+        - name: integration
+          in: query
+          description: Filter for session tokens associated with an integration.
+          required: false
+          schema:
+            type: string
+        - name: connected_account_id
+          in: query
+          description: Filter for session tokens associated with a connected account.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListConnectSessionsResponse"
+                $ref: "#/components/schemas/ListSessionTokensResponse"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
@@ -658,9 +680,9 @@ paths:
 
             const embed = new Embed();
 
-            const connectSessions = await embed.connectSessions.list();
+            const sessionTokens = await embed.sessionTokens.list();
 
-            console.log(connectSessions);
+            console.log(sessionTokens);
         - lang: "python"
           label: "Python"
           source: |
@@ -668,37 +690,37 @@ paths:
 
             client = Embed()
 
-            connect_sessions = client.connect_sessions.list()
+            session_tokens = client.session_tokens.list()
 
-            print(connect_sessions)
+            print(session_tokens)
         - lang: "cURL"
           label: "cURL"
           source: |
-            curl -G https://api.useembed.com/v1/connect-sessions \
+            curl -G https://api.useembed.com/v1/session-tokens \
               -H "Authorization: Bearer $EMBED_API_KEY"
-  /connect-sessions/{connect_session_id}:
+  /session-tokens/{token}:
     get:
-      operationId: getConnectSession
+      operationId: getSessionToken
       tags:
-        - Connected Accounts
-      summary: Retrieve connect session
-      description: Returns a connect session.
+        - Session Tokens
+      summary: Retrieve session token
+      description: Returns a session token.
       parameters:
-        - name: connect_session_id
+        - name: token
           in: path
-          description: The unique identifier for the connect session.
+          description: The unique token for the session.
           required: true
           schema:
             type: string
             examples:
-              - cs_1a2b3c
+              - st_1a2b3c
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ConnectSessionObject"
+                $ref: "#/components/schemas/SessionTokenObject"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
@@ -707,9 +729,9 @@ paths:
 
             const embed = new Embed();
 
-            const connectSession = await embed.connectSessions.retrieve("cs_1a2b3c");
+            const sessionToken = await embed.sessionTokens.retrieve("st_1a2b3c");
 
-            console.log(connectSession);
+            console.log(sessionToken);
         - lang: "python"
           label: "Python"
           source: |
@@ -717,36 +739,36 @@ paths:
 
             client = Embed()
 
-            connect_session = client.connect_sessions.retrieve("cs_1a2b3c")
+            session_token = client.session_tokens.retrieve("st_1a2b3c")
 
-            print(connect_session)
+            print(session_token)
         - lang: "cURL"
           label: "cURL"
           source: |
-            curl -G https://api.useembed.com/v1/connect-sessions/cs_1a2b3c \
+            curl -G https://api.useembed.com/v1/session-tokens/st_1a2b3c \
               -H "Authorization: Bearer $EMBED_API_KEY"
     delete:
-      operationId: deleteConnectSession
+      operationId: deleteSessionToken
       tags:
-        - Connected Accounts
-      summary: Delete connect session
-      description: Deletes a connect session.
+        - Session Tokens
+      summary: Delete session token
+      description: Deletes a session token.
       parameters:
-        - name: connect_session_id
+        - name: token
           in: path
-          description: The unique identifier for the connect session.
+          description: The unique token for the session.
           required: true
           schema:
             type: string
             examples:
-              - cs_1a2b3c
+              - st_1a2b3c
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DeleteConnectSessionResponse"
+                $ref: "#/components/schemas/DeleteSessionTokenResponse"
       x-codeSamples:
         - lang: "javascript"
           label: "Node.js"
@@ -755,7 +777,7 @@ paths:
 
             const embed = new Embed();
 
-            const response = await embed.connectSessions.delete("cs_1a2b3c");
+            const response = await embed.sessionTokens.delete("st_1a2b3c");
 
             console.log(response);
         - lang: "python"
@@ -765,13 +787,13 @@ paths:
 
             client = Embed()
 
-            response = client.connect_sessions.delete("cs_1a2b3c")
+            response = client.session_tokens.delete("st_1a2b3c")
 
             print(response)
         - lang: "cURL"
           label: "cURL"
           source: |
-            curl https://api.useembed.com/v1/connect-sessions/cs_1a2b3c \
+            curl https://api.useembed.com/v1/session-tokens/st_1a2b3c \
               -X DELETE \
               -H "Authorization: Bearer $EMBED_API_KEY"
   /providers:
@@ -2244,6 +2266,170 @@ paths:
               -H "Authorization: Bearer $EMBED_API_KEY" \
               -d integration=github-123 \
               -d connected_account_id=user-123
+  /query:
+    post:
+      operationId: singleQuery
+      tags:
+        - Queries
+      summary: Query
+      description: Executes a single query.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const query = await embed.query({
+              integration: "github-123",
+              collection: "issues",
+              connected_account_id: "user-123",
+              query: "Dark mode",
+              filter: { state: "open" }
+            });
+
+            console.log(query);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            query = client.query(
+              integration="github-123",
+              collection="issues",
+              connected_account_id="user-123",
+              query="Dark mode",
+              filter={"state": "open"}
+            )
+
+            print(query)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/query \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "integration": "github",
+                "collection": "issues",
+                "connected_account_id": "user-123",
+                "query": "Dark mode",
+                "filter": { "state": "open" }
+              }'
+  /multi-query:
+    post:
+      operationId: multiQuery
+      tags:
+        - Queries
+      summary: Multi-query
+      description: Executes multiple queries in a single request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MultiQueryRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MultiQueryResponse"
+      x-codeSamples:
+        - lang: "javascript"
+          label: "Node.js"
+          source: |
+            import Embed from "@embedhq/node";
+
+            const embed = new Embed();
+
+            const results = await embed.multiQuery({
+              queries: [
+                {
+                  integration: "github-123",
+                  collection: "issues",
+                  connected_account_id: "user-123",
+                  query: "Dark mode",
+                  filter: { state: "open" }
+                },
+                {
+                  integration: "slack",
+                  collection: "messages",
+                  connected_account_id: "user-123",
+                  query: "Dark mode",
+                  filter: { channel: "support" }
+                }
+              ]
+            });
+
+            console.log(results);
+        - lang: "python"
+          label: "Python"
+          source: |
+            from embedhq import Embed
+
+            client = Embed()
+
+            results = client.multi_query(
+              queries=[
+                {
+                  "integration": "github",
+                  "collection": "issues",
+                  "connected_account_id": "user-123",
+                  "query": "Dark mode",
+                  "filter": { "state": "open" }
+                },
+                {
+                  "integration": "slack",
+                  "collection": "messages",
+                  "connected_account_id": "user-123",
+                  "query": "Dark mode",
+                  "filter": { "channel": "support" }
+                }
+            )
+
+            print(results)
+        - lang: "cURL"
+          label: "cURL"
+          source: |
+            curl https://api.useembed.com/v1/multi-query \
+              -H "Authorization: Bearer $EMBED_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "queries": [
+                  {
+                    "integration": "github",
+                    "collection": "issues",
+                    "connected_account_id": "user-123",
+                    "query": "Dark mode",
+                    "filter": { "state": "open" }
+                  },
+                  {
+                    "integration": "slack",
+                    "collection": "messages",
+                    "connected_account_id": "user-123",
+                    "query": "Dark mode",
+                    "filter": { "channel": "support" }
+                  }
+                ]
+              }'
   /actions:
     get:
       operationId: listActions
@@ -4180,32 +4366,32 @@ components:
         - id
         - deleted
 
-    ConnectSessionObject:
+    SessionTokenObject:
       type: object
-      title: ConnectSession
-      description: A secure, short-lived session used to connect an account.
+      title: SessionToken
+      description: A short-lived token used to connect an account securely.
       properties:
         object:
-          description: The object type, which is always `connect_session`.
+          description: The object type, which is always `session_token`.
           type: string
-          enum: ["connect_session"]
-        id:
-          description: The unique identifier for the connect session.
+          enum: ["session_token"]
+        token:
+          description: The unique token for the session.
           type: string
           examples:
-            - cs_1a2b3c
+            - st_1a2b3c
         url:
           description: The magic link used to connect an account.
           type: string
           examples:
-            - https://api.useembed.com/connect/cs_1a2b3c
+            - https://api.useembed.com/connect/st_1a2b3c
         integration:
           description: The unique slug of the integration to connect the account to.
           type: string
           examples:
             - github-123
         connected_account_id:
-          description: The unique identifier for the connected account.
+          description: The unique identifier to assign to the connected account.
           type: string
           examples:
             - user-123
@@ -4220,7 +4406,7 @@ components:
           examples:
             - https://my-app.com/callback
         name:
-          description: The display name of the connected account.
+          description: The display name to assign to the connected account.
           type: [string, "null"]
           examples:
             - Octocat
@@ -4243,7 +4429,7 @@ components:
             - 1718312375
       required:
         - object
-        - id
+        - token
         - url
         - connected_account_id
         - integration
@@ -4254,13 +4440,13 @@ components:
         - metadata
         - created_at
 
-    CreateConnectSessionRequest:
+    CreateSessionTokenRequest:
       type: object
       additionalProperties: false
       properties:
         connected_account_id:
           type: string
-          description: The unique identifier for the connected account.
+          description: The unique identifier to assign to the connected account.
           examples:
             - user-123
         integration:
@@ -4281,7 +4467,7 @@ components:
             - https://my-app.com/callback
         name:
           type: [string, "null"]
-          description: The display name of the connected account.
+          description: The display name to assign to the connected account.
           examples:
             - Octocat
         configuration:
@@ -4300,7 +4486,7 @@ components:
         - connected_account_id
         - integration
 
-    ListConnectSessionsResponse:
+    ListSessionTokensResponse:
       type: object
       properties:
         object:
@@ -4309,21 +4495,21 @@ components:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/ConnectSessionObject"
+            $ref: "#/components/schemas/SessionTokenObject"
       required:
         - object
         - data
 
-    DeleteConnectSessionResponse:
+    DeleteSessionTokenResponse:
       type: object
       properties:
         object:
           type: string
-          enum: [connect_session]
+          enum: [session_token]
         id:
           type: string
           examples:
-            - cs_1a2b3c
+            - st_1a2b3c
         deleted:
           type: boolean
           examples:
@@ -4513,6 +4699,21 @@ components:
     QueryRequest:
       type: object
       properties:
+        integration:
+          type: string
+          description: The unique slug of the integration to query.
+          examples:
+            - github-123
+        connected_account_id:
+          type: string
+          description: The unique identifier of the connected account to query.
+          examples:
+            - user-123
+        collection:
+          type: string
+          description: The unique slug of the collection to query. If empty, all collections associated with the integration/connected account will be queried.
+          examples:
+            - issues
         type:
           type: string
           description: The type of query.
@@ -4543,35 +4744,157 @@ components:
           items:
             type: string
           description: Specify properties you want to return in the results set.
+      required:
+        - integration
+        - connected_account_id
 
-    QueryCollectionResponse:
+    QueryResponse:
       type: object
       properties:
-        object:
-          type: string
-          enum: [list]
-        data:
+        found:
+          type: integer
+          description: The total number of objects matching the query.
+          example: 1
+        out_of:
+          type: integer
+          description: The total number of objects considered for the query.
+          example: 3
+        search_time_ms:
+          type: integer
+          description: The time taken to execute the search in milliseconds.
+          example: 63
+        page:
+          type: integer
+          description: The current page number of the results.
+          example: 1
+        hits:
           type: array
           items:
             type: object
-            description: The data objects returned by the query.
-            additionalProperties: true
+            properties:
+              object:
+                type: object
+                description: The data object returned by the query.
+                additionalProperties: true
+                examples:
+                  - {
+                      "id": "123",
+                      "title": "Support dark mode",
+                      "body": "It's too difficult to use the application at night.",
+                      "url": "https://api.github.com/repos/octocat/Hello-World/issues/123",
+                      "number": 1,
+                      "state": "open",
+                      "created_at": "2024-06-01T00:00:00Z",
+                      "updated_at": "2024-06-01T00:00:00Z",
+                    }
+              highlights:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: title
+                    snippet:
+                      type: string
+                      example: Support dark mode
+                    matched_tokens:
+                      type: array
+                      items:
+                        type: string
+                      example: [dark, mode]
+              score:
+                type: number
+                format: float
+                description: The relevance score of the object for the given query.
+                example: 0.98
+      required:
+        - found
+        - out_of
+        - search_time_ms
+        - page
+        - hits
+
+    MultiQueryRequest:
+      type: object
+      properties:
+        queries:
+          type: array
+          items:
+            $ref: "#/components/schemas/QueryRequest"
+          description: An array of query objects to execute in parallel.
+
+    MultiQueryResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/QueryResponse"
+          description: An array of query results corresponding to the input queries.
           examples:
             - [
                 {
-                  "id": "123",
-                  "title": "Support dark mode",
-                  "body": "It's too difficult to use the application at night.",
-                  "url": "https://api.github.com/repos/octocat/Hello-World/issues/123",
-                  "number": 1,
-                  "state": "open",
-                  "created_at": "2024-06-01T00:00:00Z",
-                  "updated_at": "2024-06-01T00:00:00Z",
+                  "found": 1,
+                  "out_of": 3,
+                  "search_time_ms": 63,
+                  "page": 1,
+                  "hits":
+                    [
+                      {
+                        "object":
+                          {
+                            "id": "123",
+                            "title": "Support dark mode",
+                            "body": "It's too difficult to use the application at night.",
+                            "url": "https://api.github.com/repos/octocat/Hello-World/issues/123",
+                            "number": 1,
+                            "state": "open",
+                            "created_at": "2024-06-01T00:00:00Z",
+                            "updated_at": "2024-06-01T00:00:00Z",
+                          },
+                        "highlights":
+                          [
+                            {
+                              "field": "title",
+                              "snippet": "Support dark mode",
+                              "matched_tokens": ["dark", "mode"],
+                            },
+                          ],
+                        "score": 0.98,
+                      },
+                    ],
+                },
+                {
+                  "found": 1,
+                  "out_of": 14,
+                  "search_time_ms": 57,
+                  "page": 1,
+                  "hits":
+                    [
+                      {
+                        "object":
+                          {
+                            "id": "456",
+                            "message": "We need to add support for light mode.",
+                            "channel": "support",
+                            "user": "U1234567890",
+                          },
+                        "highlights":
+                          [
+                            {
+                              "field": "message",
+                              "snippet": "We need to add support for light mode.",
+                              "matched_tokens": ["light", "mode"],
+                            },
+                          ],
+                        "score": 0.95,
+                      },
+                    ],
                 },
               ]
       required:
-        - object
-        - data
+        - results
 
     SyncObject:
       type: object
